@@ -3,12 +3,12 @@
 # ==========================================================
 
 # Compiler and Linker
-CXX				:= g++
+CXX				:= clang
 
 # Flags and Libraries
-CXX_FLAGS 		:= -std=c++14 -Wall -g -O3
-LIB_FLAGS 		:= -lm -lncurses
-INC_FLAGS 		:= -I$(INCLUDE_DIR) -I/usr/local/include -I.
+CXX_FLAGS 		:= -Wall -Wextra -Wpedantic -g -O3 
+LIB_FLAGS 		:= `llvm-config --cxxflags --ldflags --system-libs --ldflags --libs core`
+INC_FLAGS 		:= -I/usr/local/include -I. 
 INC_DEP			:= -I$(INCLUDE_DIR)
 
 # Target executable

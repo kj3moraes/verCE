@@ -1,7 +1,9 @@
 #ifndef __TOKEN_H__
 #define __TOKEN_H__
 
+#include <iostream>
 #include <string>
+#include <vector>
 
 enum Kind {
     ID = 0,
@@ -15,19 +17,32 @@ enum Kind {
     WHITESPACE,
 };
 
-enum Token {
-    TOKEN_EOF = -1,
+class Token {
 
-    // Commands
-    TOKEN_DEF = -2,
-    TOKEN_EXTERN = -3,
+    private:
+        Kind kind;
+        std::string value;
+    
+    public:
+        Token(Kind kind, std::string value) : kind(kind), value(value) {}
 
-    // Primary
-    TOKEN_IDENTIFIER = -4,
-    TOKEN_NUMBER = -5,
+        Kind getKind() const; 
+        const std::string getValue() const; 
 };
 
-static std::string IdentifierString;
-static double NumberValue; 
+std::ostream &operator<<(std::ostream &out, const Token &token);
 
 #endif // __TOKEN_H__
+
+
+#ifndef __SCAN_FAIL_H__
+#define __SCAN_FAIL_H__
+class ScanningFailure {
+
+    std::string message;
+
+    public:
+        ScanningFailure(std::string message) : message(message) {}
+        const std::string waht() const;
+};
+#endif // __SCAN_FAIL_H__
