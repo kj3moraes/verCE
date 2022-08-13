@@ -1,6 +1,6 @@
 # verCE
 
-A language frontend that with LLLVM. The language currently supports :
+A language frontend that with LLLVM pronounced like the word '_verse_'. The language currently supports :
 
 * `double` type variables
 * Binary operations

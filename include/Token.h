@@ -3,6 +3,18 @@
 
 #include <string>
 
+enum Kind {
+    ID = 0,
+    NUM,
+    PLUS,
+    MINUS,
+    STAR,
+    BECOMES,
+    EQ,
+    LT,
+    WHITESPACE,
+};
+
 enum Token {
     TOKEN_EOF = -1,
 
