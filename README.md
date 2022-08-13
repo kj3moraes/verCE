@@ -1,5 +1,7 @@
 # verCE
-A language frontend that with LLLVM. The language currently supports : 
+
+A language frontend that with LLLVM. The language currently supports :
+
 * `double` type variables
 * Binary operations
 * Function calls
