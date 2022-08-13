@@ -12,7 +12,7 @@ More features will be added soon.
 
 To build the program, just type `make all` when you are in the root directory. The executable will be in the /bin directory. **This language developed requires LLVM>=10.0**.  
 
-Refer to the `LANGUAGE_DOC.md` for information on how to use the language and any experimental features. This also contains 
+Refer to the `LANGUAGE_DOC.md` for information on how to use the language and any experimental features. This also contains
 
 ## References
 
