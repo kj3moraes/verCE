@@ -9,63 +9,65 @@
 
 #include "Token.h"
 
-enum State {
-
-    // Literals and numbers
-    ST_ID = 0,
-    ST_NUM,
-
-    // Parenthesis, Braces and Brackets
-    ST_LPAREN,
-    ST_RPAREN,
-    ST_LBRACE,
-    ST_RBRACE,
-    ST_LBRACK,
-    ST_RBRACK,
-
-    // Relational Operators
-    ST_BECOMES,
-    ST_EQ,
-    ST_NE,
-    ST_LT,
-    ST_GT,
-    ST_LE,
-    ST_GE,
-
-    // Arithmetic Operators
-    ST_PLUS,
-    ST_MINUS,
-    ST_STAR,
-    ST_SLASH,
-    ST_MODULO,
-
-    // Punctuality
-    ST_COMMA,
-    ST_SEMI,
-    ST_WHITESPACE,
-
-    // Memory Management
-    ST_NEW,
-    ST_DELETE,
-    ST_AMP,
-
-    // States that are not Kinds
-    ST_START,
-    ST_ZEROERR,
-    ST_ERR,
-    ST_EXC,
-    ST_DOLLARS,
-
-    ST_LARGEST_STATE = ST_DOLLARS
-};
 
 class Lexer {
+
+    enum State {
+
+        // Literals and numbers
+        ST_ID = 0,
+        ST_NUM,
+
+        // Parenthesis, Braces and Brackets
+        ST_LPAREN,
+        ST_RPAREN,
+        ST_LBRACE,
+        ST_RBRACE,
+        ST_LBRACK,
+        ST_RBRACK,
+
+        // Relational Operators
+        ST_BECOMES,
+        ST_EQ,
+        ST_NE,
+        ST_LT,
+        ST_GT,
+        ST_LE,
+        ST_GE,
+
+        // Arithmetic Operators
+        ST_PLUS,
+        ST_MINUS,
+        ST_STAR,
+        ST_SLASH,
+        ST_MODULO,
+
+        // Punctuality
+        ST_COMMA,
+        ST_SEMI,
+        ST_WHITESPACE,
+
+        // Memory Management
+        ST_NEW,
+        ST_DELETE,
+        ST_AMP,
+
+        // States that are not Kinds
+        ST_START,
+        ST_ZEROERR,
+        ST_ERR,
+        ST_EXC,
+        ST_DOLLARS,
+
+        ST_LARGEST_STATE = ST_DOLLARS
+    };
+
         
     std::set<State> acceptingStates;
 
     std::array<std::array<State, 256>, ST_LARGEST_STATE + 1> transitionFunction;
 
-    Kind stateToKind(State s);
+    Kind stateToKind(State s) const;
 
     std::vector<Token> simplifiedMaximalMunch(const std::string &input) const;
 
