@@ -21,19 +21,10 @@ class Lexer {
         // Parenthesis, Braces and Brackets
         ST_LPAREN,
         ST_RPAREN,
-        ST_LBRACE,
-        ST_RBRACE,
-        ST_LBRACK,
-        ST_RBRACK,
 
         // Relational Operators
         ST_BECOMES,
         ST_EQ,
-        ST_NE,
-        ST_LT,
-        ST_GT,
-        ST_LE,
-        ST_GE,
 
         // Arithmetic Operators
         ST_PLUS,
@@ -47,11 +38,6 @@ class Lexer {
         ST_SEMI,
         ST_WHITESPACE,
 
-        // Memory Management
-        ST_NEW,
-        ST_DELETE,
-        ST_AMP,
-
         // States that are not Kinds
         ST_START,
         ST_ZEROERR,
@@ -62,9 +48,7 @@ class Lexer {
         ST_LARGEST_STATE = ST_DOLLARS
     };
 
-        
     std::set<State> acceptingStates;
-
     std::array<std::array<State, 256>, ST_LARGEST_STATE + 1> transitionFunction;
 
     Kind stateToKind(State s) const;
@@ -93,6 +77,6 @@ class Lexer {
          * @param input 
          * @return std::vector<Token> 
          */
-        std::vector<Token> scan(std::string &input);
+        std::vector<Token> scan(std::string &input, const long lineNumber);
 };
 #endif // __LEXER_H__

@@ -1,18 +1,28 @@
 # verCE
 
-A language frontend that with LLLVM pronounced like the word '_verse_'. The language currently supports :
+A language frontend with LLVM pronounced like the word '_verse_'. This language has almost python-like syntax with a few tidbits from C/C++. The compiler currently supports :
 
-* `double` type variables
+* Only `double` type variables
 * Binary operations
 * Function calls
+* `extern` keyword
 
-More features will be added soon.
+More features will be added soon. Refer to the `LANGUAGE_DOC.md` for information on how to use the language, what is supported and how to get started.
 
 ## Building and Experimenting
 
-To build the program, just type `make all` when you are in the root directory. The executable will be in the /bin directory. **This language developed requires LLVM>=10.0**.  
+To build the program, just type `make all` when you are in the root directory. This will create /bin and /build directories. The executable will be in the /bin directory. The requirements are :
 
-Refer to the `LANGUAGE_DOC.md` for information on how to use the language and any experimental features. This also contains
+* clang>=8.0
+* LLVM>=3.6
+* GNU Make
+
+To rebuild completely, type
+
+```bash
+make purge
+make all
+```
 
 ## References
 
@@ -20,4 +30,6 @@ Refer to the `LANGUAGE_DOC.md` for information on how to use the language and an
 [2] University of Waterloo CS 241 Course Notes.  
 [3] [Let's write a compiler](https://briancallahan.net/blog/20210814.html)
 
-This project is licensed under the Apache 2.0 License. See the LICENSE file for more information.
+This project is licensed under the Apache 2.0 License. See the LICENSE file for more information. The copyright notice is below.
+
+Copyright (c) 2022 Keane Moraes

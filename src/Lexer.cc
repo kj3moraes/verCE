@@ -11,6 +11,33 @@ const std::map<std::string, Kind> specialIDS = {
 
 Lexer::Lexer() {
 
+    // 1. DEFINE ALL THE ACCEPTING STATES
+    acceptingStates = {
+        ST_ID,
+        ST_NUM,
+        ST_LPAREN,
+        ST_RPAREN,
+        ST_BECOMES,
+        ST_EQ,
+        ST_COMMA,
+        ST_SEMI,
+        ST_WHITESPACE,
+        ST_PLUS,
+        ST_MINUS,
+        ST_STAR
+    };
+
+    // 2. SET ALL THE DEFAULT TRANSITIONS TO THE ERROR STATE
+    for (size_t i = 0; i < transitionFunction.size(); i++) {
+        for (size_t j = 0; j < transitionFunction[i].size(); j++) {
+            transitionFunction[i][j] = ST_ERR;
+        }
+    }
+
+    // 3. REGISTER ALL THE TRANSITIONS
+    
+
+
 }
 
 void Lexer::registerTransition(State oldState, const std::string &chars, State newState) {
@@ -74,7 +101,7 @@ std::vector<Token> Lexer::simplifiedMaximalMunch(const std::string &input) const
                 if (isFailed(state)) {
                     munchedInput += *inputPosn;
                 }
-                throw ScanningFailure("ERROR: Scanning failure on input: " + munchedInput);
+                throw ScanningFailure("Scanning failure on input: " + munchedInput);
             }
         }
     }
@@ -82,6 +109,6 @@ std::vector<Token> Lexer::simplifiedMaximalMunch(const std::string &input) const
 }
 
 
-std::vector<Token> Lexer::scan(std::string &input) {
+std::vector<Token> Lexer::scan(std::string &input, const long lineNumber) {
     
 }

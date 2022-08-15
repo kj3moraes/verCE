@@ -2,6 +2,13 @@
 #  					MAKEFILE for verCE
 # ==========================================================
 
+# Directories
+SRC_DIR			:= src
+OBJ_DIR			:= build
+INCLUDE_DIR		:= include
+TARGET_DIR		:= bin
+RES_DIR			:= res
+
 # Compiler and Linker
 CXX				:= clang
 
@@ -13,13 +20,6 @@ INC_DEP			:= -I$(INCLUDE_DIR)
 
 # Target executable
 TARGET			:= verCE
-
-# Directories
-SRC_DIR			:= src
-OBJ_DIR			:= build
-INCLUDE_DIR		:= include
-TARGET_DIR		:= bin
-RES_DIR			:= res
 
 # Extensions
 SRC_EXT			:= cc
@@ -34,7 +34,7 @@ SOURCES     := $(shell find $(SRC_DIR) -type f -name *.$(SRC_EXT))
 OBJECTS     := $(patsubst $(SRC_DIR)/%,$(OBJ_DIR)/%,$(SOURCES:.$(SRC_EXT)=.$(OBJ_EXT)))
 
 # Default Make
-all: directories resources $(TARGET)
+all: directories $(TARGET)
 
 # Remake the executable
 remake: purge all
@@ -48,7 +48,6 @@ directories:
 clean:
 	@$(RM) -rf $(OBJ_DIR) 
 	
-
 # Full Clean : objects, dependencies and directories
 purge: clean
 	@$(RM) -rf $(TARGET_DIR)
