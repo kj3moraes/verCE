@@ -16,7 +16,7 @@ std::ostream &operator<<(std::ostream &out, const Token &tok) {
         case EQ:         out << "EQ";         break;
         case LT:         out << "LT";         break;
         case PLUS:       out << "PLUS";       break;
-        case MINUS:      out << "MINUS";      break;
+        case MINUS:      out << "MINUS";      break; 
         case STAR:       out << "STAR";       break;
         case LPAREN:     out << "LPAREN";     break;
         case RPAREN:     out << "RPAREN";     break;
@@ -24,7 +24,7 @@ std::ostream &operator<<(std::ostream &out, const Token &tok) {
         case EXTERN:     out << "EXTERN";     break;
         case WHITESPACE: out << "WHITESPACE"; break;
     }
-    out << " " << tok.getLexeme();
+    out << ":" << tok.getLexeme() << " ";
 
     return out;
 }

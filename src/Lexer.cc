@@ -20,7 +20,6 @@ Lexer::Lexer() {
         ST_BECOMES,
         ST_EQ,
         ST_COMMA,
-        ST_SEMI,
         ST_WHITESPACE,
         ST_PLUS,
         ST_MINUS,
@@ -35,9 +34,44 @@ Lexer::Lexer() {
     }
 
     // 3. REGISTER ALL THE TRANSITIONS
-    
+    registerTransition(ST_START, isalpha, ST_ID);
+    registerTransition(ST_START, "0", ST_ZEROERR);
+    registerTransition(ST_START, isdigit, ST_NUM);
+    registerTransition(ST_START, ")", ST_RPAREN);
+    registerTransition(ST_START, "(", ST_LPAREN);
+    registerTransition(ST_START, "=", ST_BECOMES);
+    registerTransition(ST_START, "+", ST_PLUS);
+    registerTransition(ST_START, "-", ST_MINUS);
+    registerTransition(ST_START, "*", ST_STAR);
+    registerTransition(ST_START, ",", ST_COMMA);
+    registerTransition(ST_START, " ", ST_WHITESPACE);
+    registerTransition(ST_START, "#", ST_WHITESPACE);
 
+    registerTransition(ST_NUM, isdigit, ST_NUM);
+    registerTransition(ST_ID, isalnum, ST_ID);
+    registerTransition(ST_START, isspace, ST_WHITESPACE);
 
+    registerTransition(ST_WHITESPACE, isspace, ST_WHITESPACE);
+
+    registerTransition(ST_BECOMES, "=", ST_EQ);
+
+}
+
+Lexer::~Lexer() {}
+
+Kind Lexer::stateToKind(State s) const {
+    switch (s) {
+        case ST_ID: return ID;
+        case ST_NUM: return NUM;
+        case ST_LPAREN: return LPAREN;
+        case ST_RPAREN: return RPAREN;
+        case ST_BECOMES: return BECOMES;
+        case ST_EQ: return EQ;
+        case ST_PLUS: return PLUS;
+        case ST_MINUS: return MINUS;
+        case ST_STAR: return STAR;
+        default: return WHITESPACE;
+    }
 }
 
 void Lexer::registerTransition(State oldState, const std::string &chars, State newState) {
@@ -53,7 +87,6 @@ void Lexer::registerTransition(State oldState, int (*test)(int), State newState)
         }
     }
 }
-
 
 Lexer::State Lexer::transition(State state, char nextChar) const {
       return transitionFunction[state][nextChar];
@@ -101,7 +134,7 @@ std::vector<Token> Lexer::simplifiedMaximalMunch(const std::string &input) const
                 if (isFailed(state)) {
                     munchedInput += *inputPosn;
                 }
-                throw ScanningFailure("Scanning failure on input: " + munchedInput);
+                throw ScanningFailure("Scan failure on input: " + munchedInput);
             }
         }
     }
@@ -111,4 +144,30 @@ std::vector<Token> Lexer::simplifiedMaximalMunch(const std::string &input) const
 
 std::vector<Token> Lexer::scan(std::string &input, const long lineNumber) {
     
+    std::vector<Token> tokens;
+    try {
+       tokens  = simplifiedMaximalMunch(input);
+    } catch (ScanningFailure &err) {
+        std::cout << "Scanning Failure at line " << lineNumber << ": " << std::endl;
+        std::cout << err.what() << std::endl;
+    }
+    std::vector<Token> finaltokens;
+
+    for (auto &t : tokens) {
+        if (t.getKind() == ID) {
+            auto it = specialIDS.find(t.getLexeme());
+
+            if (it == specialIDS.end()) {
+                finaltokens.push_back(t);
+                continue;
+            }
+            finaltokens.emplace_back(it->second, it->first);
+            continue;
+        } else if (t.getKind() == WHITESPACE) {
+            if ( t.getLexeme()[0] == '/') break;
+            else continue;
+        } 
+        finaltokens.push_back(t);
+    }
+    return finaltokens;
 }

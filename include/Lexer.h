@@ -35,7 +35,6 @@ class Lexer {
 
         // Punctuality
         ST_COMMA,
-        ST_SEMI,
         ST_WHITESPACE,
 
         // States that are not Kinds
@@ -49,6 +48,7 @@ class Lexer {
     };
 
     std::set<State> acceptingStates;
+    
     std::array<std::array<State, 256>, ST_LARGEST_STATE + 1> transitionFunction;
 
     Kind stateToKind(State s) const;

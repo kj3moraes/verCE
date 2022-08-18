@@ -38,13 +38,16 @@ std::ostream &operator<<(std::ostream &out, const Token &token);
 
 #endif // __TOKEN_H__
 
-
+#ifndef __SCAN_FAILURE_H__
+#define __SCAN_FAILURE_H__
 class ScanningFailure {
 
     std::string message;
 
     public:
-        ScanningFailure(std::string message) : message(message) {}
+        ScanningFailure(std::string message);
 
         const std::string what() const;
 };
+
+#endif // __SCAN_FAILURE_H__

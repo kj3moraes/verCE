@@ -1,6 +1,8 @@
-# ==========================================================
-#  					MAKEFILE for verCE
-# ==========================================================
+# Compiler and Linker
+CXX				:= g++
+
+# Target executable
+TARGET			:= verCE
 
 # Directories
 SRC_DIR			:= src
@@ -9,22 +11,16 @@ INCLUDE_DIR		:= include
 TARGET_DIR		:= bin
 RES_DIR			:= res
 
-# Compiler and Linker
-CXX				:= clang
-
-# Flags and Libraries
-CXX_FLAGS 		:= -Wall -Wextra -Wpedantic -g -O3 
-LIB_FLAGS 		:= `llvm-config --cxxflags --ldflags --system-libs --ldflags --libs core`
-INC_FLAGS 		:= -I/usr/local/include -I. 
-INC_DEP			:= -I$(INCLUDE_DIR)
-
-# Target executable
-TARGET			:= verCE
-
 # Extensions
 SRC_EXT			:= cc
 DEP_EXT 		:= d
 OBJ_EXT			:= o
+
+# Flags and Libraries
+CXX_FLAGS 		:= -std=c++14 -Wall -g -O3
+LIB_FLAGS 		:= -lm 
+INC_FLAGS 		:= -I$(INCLUDE_DIR) -I/usr/local/include -I.
+INC_DEP			:= -I$(INCLUDE_DIR)
 
 # ------------------------------------------------------------------------------
 # Do not edit below this line
@@ -44,14 +40,13 @@ directories:
 	mkdir -p $(TARGET_DIR)
 	mkdir -p $(OBJ_DIR)
 
-# Clean only Objects
+# Clean only Objecst
 clean:
-	@$(RM) -rf $(OBJ_DIR) 
-	
-# Full Clean : objects, dependencies and directories
+	@$(RM) -rf $(OBJ_DIR)
+
+# Full Clean, Objects and Binaries
 purge: clean
 	@$(RM) -rf $(TARGET_DIR)
-	@$(RM) -d $(TARGET_DIR) $(OBJ_DIR)
 
 # Pull in dependency info for *existing* .o files
 -include $(OBJECTS:.$(OBJ_EXT)=.$(DEP_EXT))
@@ -71,4 +66,4 @@ $(OBJ_DIR)/%.$(OBJ_EXT): $(SRC_DIR)/%.$(SRC_EXT)
 	@rm -f $(OBJ_DIR)/$*.$(DEP_EXT).tmp
 
 # Non-File Targets
-.PHONY: all remake clean purge resources
+.PHONY: all remake clean purge 
