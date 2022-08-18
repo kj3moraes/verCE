@@ -8,13 +8,13 @@ const std::map<std::string, Kind> specialIDS = {
     {"extern", EXTERN},
 };
 
-
 Lexer::Lexer() {
 
     // 1. DEFINE ALL THE ACCEPTING STATES
     acceptingStates = {
         ST_ID,
         ST_NUM,
+        ST_NUM_AFTER_DECIMAL,
         ST_LPAREN,
         ST_RPAREN,
         ST_BECOMES,
@@ -23,7 +23,8 @@ Lexer::Lexer() {
         ST_WHITESPACE,
         ST_PLUS,
         ST_MINUS,
-        ST_STAR
+        ST_STAR,
+        ST_ZEROERR
     };
 
     // 2. SET ALL THE DEFAULT TRANSITIONS TO THE ERROR STATE
@@ -44,15 +45,15 @@ Lexer::Lexer() {
     registerTransition(ST_START, "-", ST_MINUS);
     registerTransition(ST_START, "*", ST_STAR);
     registerTransition(ST_START, ",", ST_COMMA);
-    registerTransition(ST_START, " ", ST_WHITESPACE);
     registerTransition(ST_START, "#", ST_WHITESPACE);
+    registerTransition(ST_START, isspace, ST_WHITESPACE);
 
     registerTransition(ST_NUM, isdigit, ST_NUM);
     registerTransition(ST_ID, isalnum, ST_ID);
-    registerTransition(ST_START, isspace, ST_WHITESPACE);
-
+    registerTransition(ST_NUM, ".", ST_DECIMAL);
+    registerTransition(ST_DECIMAL, isdigit, ST_NUM_AFTER_DECIMAL);
+    registerTransition(ST_ZEROERR, ".", ST_DECIMAL);
     registerTransition(ST_WHITESPACE, isspace, ST_WHITESPACE);
-
     registerTransition(ST_BECOMES, "=", ST_EQ);
 
 }
@@ -63,6 +64,7 @@ Kind Lexer::stateToKind(State s) const {
     switch (s) {
         case ST_ID: return ID;
         case ST_NUM: return NUM;
+        case ST_NUM_AFTER_DECIMAL: return NUM;
         case ST_LPAREN: return LPAREN;
         case ST_RPAREN: return RPAREN;
         case ST_BECOMES: return BECOMES;
@@ -134,7 +136,7 @@ std::vector<Token> Lexer::simplifiedMaximalMunch(const std::string &input) const
                 if (isFailed(state)) {
                     munchedInput += *inputPosn;
                 }
-                throw ScanningFailure("Scan failure on input: " + munchedInput);
+                throw ScanningFailure("Failure on input>" + munchedInput);
             }
         }
     }
@@ -148,8 +150,8 @@ std::vector<Token> Lexer::scan(std::string &input, const long lineNumber) {
     try {
        tokens  = simplifiedMaximalMunch(input);
     } catch (ScanningFailure &err) {
-        std::cout << "Scanning Failure at line " << lineNumber << ": " << std::endl;
-        std::cout << err.what() << std::endl;
+        std::cerr << "Scanning Failure at line " << lineNumber << ": " << std::endl;
+        std::cerr << err.what() << std::endl;
     }
     std::vector<Token> finaltokens;
 
@@ -164,7 +166,7 @@ std::vector<Token> Lexer::scan(std::string &input, const long lineNumber) {
             finaltokens.emplace_back(it->second, it->first);
             continue;
         } else if (t.getKind() == WHITESPACE) {
-            if ( t.getLexeme()[0] == '/') break;
+            if ( t.getLexeme()[0] == COMMENT_INIT) break;
             else continue;
         } 
         finaltokens.push_back(t);

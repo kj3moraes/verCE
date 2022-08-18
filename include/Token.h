@@ -5,6 +5,9 @@
 #include <string>
 #include <vector>
 
+/* The character that indicates that a comment follows */
+#define COMMENT_INIT '#'
+
 enum Kind {
     ID = 0,
     NUM,
@@ -16,6 +19,8 @@ enum Kind {
     LT,
     LPAREN,
     RPAREN,
+    COMMA,
+    DOT,
     DEF,
     EXTERN,
     WHITESPACE,

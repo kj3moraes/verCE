@@ -17,6 +17,8 @@ class Lexer {
         // Literals and numbers
         ST_ID = 0,
         ST_NUM,
+        ST_DECIMAL,
+        ST_NUM_AFTER_DECIMAL,
 
         // Parenthesis, Braces and Brackets
         ST_LPAREN,
@@ -35,6 +37,7 @@ class Lexer {
 
         // Punctuality
         ST_COMMA,
+        ST_DOT,
         ST_WHITESPACE,
 
         // States that are not Kinds

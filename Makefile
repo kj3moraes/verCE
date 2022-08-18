@@ -17,7 +17,7 @@ DEP_EXT 		:= d
 OBJ_EXT			:= o
 
 # Flags and Libraries
-CXX_FLAGS 		:= -std=c++14 -Wall -g -O3
+CXX_FLAGS 		:= -std=c++14 -Wall -Wextra -Wpedantic -g -O3
 LIB_FLAGS 		:= -lm 
 INC_FLAGS 		:= -I$(INCLUDE_DIR) -I/usr/local/include -I.
 INC_DEP			:= -I$(INCLUDE_DIR)

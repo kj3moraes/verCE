@@ -20,6 +20,8 @@ std::ostream &operator<<(std::ostream &out, const Token &tok) {
         case STAR:       out << "STAR";       break;
         case LPAREN:     out << "LPAREN";     break;
         case RPAREN:     out << "RPAREN";     break;
+        case COMMA:      out << "COMMA";      break;
+        case DOT:        out << "DOT";        break;
         case DEF:        out << "DEF";        break;
         case EXTERN:     out << "EXTERN";     break;
         case WHITESPACE: out << "WHITESPACE"; break;
