@@ -13,6 +13,6 @@ class Parser {
         ~Parser();
 
         ExpressionAST* parse();
-}
+};
 
 #endif // __PARSER_H__

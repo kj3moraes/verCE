@@ -1,10 +1,10 @@
 #ifndef __AST_H__
 #define __AST_H__
 
-#include "ExpressionAST.h"
-#include "BinaryOperationAST.h"
-#include "NumberAST.h"
-#include "VariableAST.h"
-#include "FunctionCallAST.h"
+#include "AST/ExpressionAST.h"
+#include "AST/BinaryOperationAST.h"
+#include "AST/NumberAST.h"
+#include "AST/VariableAST.h"
+#include "AST/FunctionCallAST.h"
 
 #endif // __AST_H__

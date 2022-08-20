@@ -9,7 +9,6 @@
 
 #include "Token.h"
 
-
 class Lexer {
 
     enum State {

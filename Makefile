@@ -1,5 +1,5 @@
 # Compiler and Linker
-CXX				:= g++
+CXX				:= clang++
 
 # Target executable
 TARGET			:= verCE
@@ -9,7 +9,7 @@ SRC_DIR			:= src
 OBJ_DIR			:= build
 INCLUDE_DIR		:= include
 TARGET_DIR		:= bin
-RES_DIR			:= res
+RES_DIR			:= resources
 
 # Extensions
 SRC_EXT			:= cc
@@ -18,7 +18,7 @@ OBJ_EXT			:= o
 
 # Flags and Libraries
 CXX_FLAGS 		:= -std=c++14 -Wall -Wextra -Wpedantic -g -O3
-LIB_FLAGS 		:= -lm 
+LIB_FLAGS 		:= -lm
 INC_FLAGS 		:= -I$(INCLUDE_DIR) -I/usr/local/include -I.
 INC_DEP			:= -I$(INCLUDE_DIR)
 

@@ -55,7 +55,7 @@ Lexer::Lexer() {
     registerTransition(ST_ZEROERR, ".", ST_DECIMAL);
     registerTransition(ST_WHITESPACE, isspace, ST_WHITESPACE);
     registerTransition(ST_BECOMES, "=", ST_EQ);
-
+    
 }
 
 Lexer::~Lexer() {}
