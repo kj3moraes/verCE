@@ -6,5 +6,7 @@
 #include "AST/NumberAST.h"
 #include "AST/VariableAST.h"
 #include "AST/FunctionCallAST.h"
+#include "AST/FunctionDefAST.h"
+#include "AST/PrototypeAST.h"
 
 #endif // __AST_H__

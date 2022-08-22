@@ -66,4 +66,4 @@ $(OBJ_DIR)/%.$(OBJ_EXT): $(SRC_DIR)/%.$(SRC_EXT)
 	@rm -f $(OBJ_DIR)/$*.$(DEP_EXT).tmp
 
 # Non-File Targets
-.PHONY: all remake clean purge 
+.PHONY: all remake clean purge directories
