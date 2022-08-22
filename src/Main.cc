@@ -16,7 +16,6 @@ int main() {
 
     while (getline(cin, line)) {
         istringstream is{line};
-        string pluck;
         
         try {
             vector<Token> tokens = ls.scan(line, lineNumber++);
@@ -25,6 +24,7 @@ int main() {
             }
         } catch(ScanningFailure &s) {
             cerr << s.what() << endl;
+            break;
         }
 
     }

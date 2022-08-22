@@ -152,6 +152,7 @@ std::vector<Token> Lexer::scan(std::string &input, const long lineNumber) {
     } catch (ScanningFailure &err) {
         std::cerr << "Scanning Failure at line " << lineNumber << ": " << std::endl;
         std::cerr << err.what() << std::endl;
+        throw ScanningFailure(err.what());
     }
     std::vector<Token> finaltokens;
 
