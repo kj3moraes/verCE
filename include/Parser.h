@@ -1,9 +1,10 @@
 #ifndef __PARSER_H__
 #define __PARSER_H__
 
+#include <map>
+#include <memory>
 #include <string>
 #include <vector>
-#include <memory>
 
 #include "Token.h"
 #include "Lexer.h"
@@ -11,9 +12,22 @@
 
 class Parser {
     
+    // Define the operator precedence for the binary operators.
+    const static std::map<char, int> binaryOperatorPrecedence;
+
     std::unique_ptr<PrototypeAST> parseExtern();
 
     std::unique_ptr<ExpressionAST> parseExpression();
+
+    std::unique_ptr<ExpressionAST> parseParenthesisExpression();
+
+    std::unique_ptr<ExpressionAST> parseIdentifierExpression();
+
+    std::unique_ptr<ExpressionAST> parsePrimary();
+
+    std::unique_ptr<ExpressionAST> parseBinaryOperatorRHS(int precedence, std::unique_ptr<ExpressionAST> lhs);
+
+    std::unique_ptr<NumberExprAST> parseNumberExpression();
 
     std::unique_ptr<FunctionAST> parseDefintion();
     
@@ -29,3 +43,18 @@ class Parser {
 };
 
 #endif // __PARSER_H__
+
+
+#ifndef __COMPILATION_FAILURE_H__
+#define __COMPILATION_FAILURE_H__
+
+class CompilationFailure {
+    std::string message;
+
+    public:
+        CompilationFailure(const std::string& message) : message(message) {}
+
+        const std::string what() const { return message; }
+};
+
+#endif

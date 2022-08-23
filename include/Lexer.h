@@ -82,3 +82,17 @@ class Lexer {
         std::vector<Token> scan(std::string &input, const long lineNumber);
 };
 #endif // __LEXER_H__
+
+#ifndef __SCAN_FAILURE_H__
+#define __SCAN_FAILURE_H__
+class ScanningFailure {
+
+    std::string message;
+
+    public:
+        ScanningFailure(std::string message) : message(message) {}
+
+        const std::string what() const { return message; };
+};
+
+#endif // __SCAN_FAILURE_H__

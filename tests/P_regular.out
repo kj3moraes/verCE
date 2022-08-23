@@ -1,0 +1,15 @@
+DEF:def 
+LPAREN:( 
+ID:x 
+RPAREN:) 
+ID:x 
+PLUS:+ 
+ID:y 
+ID:h 
+MINUS:- 
+ID:j 
+BECOMES:= 
+NUM:2 
+EXTERN:extern 
+NUM:12 
+ID:f5 

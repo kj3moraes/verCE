@@ -30,7 +30,3 @@ std::ostream &operator<<(std::ostream &out, const Token &tok) {
 
     return out;
 }
-
-ScanningFailure::ScanningFailure(std::string message): message(std::move(message)) {}
-
-const std::string ScanningFailure::what() const { return "ERROR: " + message; }

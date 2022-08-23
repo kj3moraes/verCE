@@ -20,13 +20,12 @@ To build the program, just type `make all` when you are in the root directory. T
 To rebuild completely, type
 
 ```bash
-make purge
-make all
+make remake
 ```
 
 ## References
 
-[1] [My First Language Frontend with LLVM Tutorial](https://llvm.org/docs/tutorial/MyFirstLanguageFrontend/index.html)
+[1] [My First Language Frontend with LLVM Tutorial](https://llvm.org/docs/tutorial/MyFirstLanguageFrontend/index.html)  
 [2] University of Waterloo CS 241 Course Notes.  
 [3] [Let's write a compiler](https://briancallahan.net/blog/20210814.html)
 
