@@ -30,3 +30,11 @@ std::ostream &operator<<(std::ostream &out, const Token &tok) {
 
     return out;
 }
+
+bool operator==(const Token &lhs, const Token &rhs) {
+    return (lhs.getKind() == rhs.getKind()) && (lhs.getLexeme() == rhs.getLexeme());
+}
+
+bool operator!=(const Token &lhs, const Token &rhs) {
+    return !(lhs == rhs);
+}

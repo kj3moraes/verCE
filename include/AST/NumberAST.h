@@ -4,11 +4,11 @@
 #include <cmath>
 #include "ExpressionAST.h"
 
-class NumberExprAST : public ExpressionAST {
+class NumberExpressionAST : public ExpressionAST {
     double val;
 
     public:
-        NumberExprAST(double value) : val(value) {}
+        NumberExpressionAST(double value) : val(value) {}
 };
 
 #endif // __NUMBER_AST_H__

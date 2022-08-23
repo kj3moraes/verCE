@@ -12,10 +12,17 @@
 
 class Parser {
     
+    // The token list for the entire program as a reference
+    const std::vector<Token> &tokens;
+    
+    // Tracking for the current token. 
+    Token currentToken;
+    unsigned long currentTokenIndex;
+
     // Define the operator precedence for the binary operators.
     const static std::map<char, int> binaryOperatorPrecedence;
 
-    std::unique_ptr<PrototypeAST> parseExtern();
+    void advance();
 
     std::unique_ptr<ExpressionAST> parseExpression();
 
@@ -27,19 +34,34 @@ class Parser {
 
     std::unique_ptr<ExpressionAST> parseBinaryOperatorRHS(int precedence, std::unique_ptr<ExpressionAST> lhs);
 
-    std::unique_ptr<NumberExprAST> parseNumberExpression();
+    std::unique_ptr<NumberExpressionAST> parseNumberExpression();
 
     std::unique_ptr<FunctionAST> parseDefintion();
     
     std::unique_ptr<FunctionAST> parseTopLevelExpression();
 
+    std::unique_ptr<PrototypeAST> parseExtern();
+
     std::unique_ptr<PrototypeAST> parsePrototypeExpression();
 
     public:
-        Parser();
+
+        /**
+         * @brief Construct a new Parser object with the reference
+         * to the token list for the entire program.
+         * @param[in] tokens is the token list for the entire program.
+         */
+        Parser(const std::vector<Token> &tokens) : tokens(tokens), currentToken(Token(ID, "i")), currentTokenIndex(0) {}
+        Parser(const std::vector<Token> &&) = delete; // prevents rvalue binding
+
         ~Parser();
 
-        std::unique_ptr<ExpressionAST> parseInput(const std::vector<Token>& input);      
+        /**
+         * @brief Builds the AST for the entire program and returns
+         * the root of the tree.
+         * @return std::unique_ptr<ExpressionAST> is the root of the AST built from the token list.
+         */
+        std::unique_ptr<ExpressionAST> parseInput();      
 };
 
 #endif // __PARSER_H__

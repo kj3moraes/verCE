@@ -41,4 +41,8 @@ class Token {
 
 std::ostream &operator<<(std::ostream &out, const Token &token);
 
+bool operator==(const Token &lhs, const Token &rhs);
+
+bool operator!=(const Token &lhs, const Token &rhs);
+
 #endif // __TOKEN_H__
