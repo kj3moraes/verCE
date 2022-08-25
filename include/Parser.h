@@ -20,7 +20,7 @@ class Parser {
     unsigned long currentTokenIndex;
 
     // Define the operator precedence for the binary operators.
-    const static std::map<char, int> binaryOperatorPrecedence;
+    const static std::map<Kind, int> binaryOperatorPrecedence;
 
     void advance();
 
@@ -51,7 +51,7 @@ class Parser {
          * to the token list for the entire program.
          * @param[in] tokens is the token list for the entire program.
          */
-        Parser(const std::vector<Token> &tokens) : tokens(tokens), currentToken(Token(ID, "i")), currentTokenIndex(0) {}
+        Parser(const std::vector<Token> &tokens) : tokens(tokens), currentToken(tokens[0]), currentTokenIndex(0) {}
         Parser(const std::vector<Token> &&) = delete; // prevents rvalue binding
 
         ~Parser();
@@ -79,4 +79,4 @@ class CompilationFailure {
         const std::string what() const { return message; }
 };
 
-#endif
+#endif // __COMPILATION_FAILURE_H__

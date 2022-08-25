@@ -1,11 +1,11 @@
 #include "Parser.h"
 
-const std::map<char, int> Parser::binaryOperatorPrecedence = {
-    {'<', 10},
-    {'+', 20},
-    {'-', 20},
-    {'*', 40},
-    {'/', 40},
+const std::map<Kind, int> Parser::binaryOperatorPrecedence = {
+    {LT, 10},
+    {PLUS, 20},
+    {MINUS, 20},
+    {STAR, 40},
+    {SLASH, 40},
 };
 
 Parser::~Parser() {}
@@ -65,7 +65,8 @@ std::unique_ptr<ExpressionAST> Parser::parseBinaryOperatorRHS(int precedence, st
 
 
 std::unique_ptr<NumberExpressionAST> Parser::parseNumberExpression() {
-    auto result = std::make_unique<NumberExpressionAST>(currentToken);
+    double number = std::stod(currentToken.getLexeme());
+    auto result = std::make_unique<NumberExpressionAST>(number);
     advance();
     return std::move(result);
 }
@@ -99,3 +100,14 @@ std::unique_ptr<PrototypeAST> Parser::parseExtern() {
     return parsePrototypeExpression();
 }
 
+
+std::unique_ptr<PrototypeAST> Parser::parsePrototypeExpression() {
+
+}
+
+std::unique_ptr<ExpressionAST> Parser::parseInput() {
+    for (unsigned long i = 0; i < tokens.size(); ++i) {
+        std::cout << tokens[i] << std::endl;
+    }
+
+}

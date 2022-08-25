@@ -17,4 +17,4 @@ class PrototypeAST {
         const std::string &getName() const { return Name; }
 };
 
-#endif
+#endif // __PROTOTYPE_AST_H__

@@ -24,6 +24,7 @@ Lexer::Lexer() {
         ST_PLUS,
         ST_MINUS,
         ST_STAR,
+        ST_SLASH,
         ST_ZEROERR
     };
 
@@ -44,6 +45,7 @@ Lexer::Lexer() {
     registerTransition(ST_START, "+", ST_PLUS);
     registerTransition(ST_START, "-", ST_MINUS);
     registerTransition(ST_START, "*", ST_STAR);
+    registerTransition(ST_START, "/", ST_SLASH);
     registerTransition(ST_START, ",", ST_COMMA);
     registerTransition(ST_START, "#", ST_WHITESPACE);
     registerTransition(ST_START, isspace, ST_WHITESPACE);
@@ -52,6 +54,7 @@ Lexer::Lexer() {
     registerTransition(ST_ID, isalnum, ST_ID);
     registerTransition(ST_NUM, ".", ST_DECIMAL);
     registerTransition(ST_DECIMAL, isdigit, ST_NUM_AFTER_DECIMAL);
+    registerTransition(ST_NUM_AFTER_DECIMAL, isdigit, ST_NUM_AFTER_DECIMAL);
     registerTransition(ST_ZEROERR, ".", ST_DECIMAL);
     registerTransition(ST_WHITESPACE, isspace, ST_WHITESPACE);
     registerTransition(ST_BECOMES, "=", ST_EQ);
@@ -62,17 +65,18 @@ Lexer::~Lexer() {}
 
 Kind Lexer::stateToKind(State s) const {
     switch (s) {
-        case ST_ID: return ID;
-        case ST_NUM: return NUM;
-        case ST_NUM_AFTER_DECIMAL: return NUM;
-        case ST_LPAREN: return LPAREN;
-        case ST_RPAREN: return RPAREN;
-        case ST_BECOMES: return BECOMES;
-        case ST_EQ: return EQ;
-        case ST_PLUS: return PLUS;
-        case ST_MINUS: return MINUS;
-        case ST_STAR: return STAR;
-        default: return WHITESPACE;
+        case ST_ID:                 return ID;
+        case ST_NUM:                return NUM;
+        case ST_NUM_AFTER_DECIMAL:  return NUM;
+        case ST_LPAREN:             return LPAREN;
+        case ST_RPAREN:             return RPAREN;
+        case ST_BECOMES:            return BECOMES;
+        case ST_EQ:                 return EQ;
+        case ST_PLUS:               return PLUS;
+        case ST_MINUS:              return MINUS;
+        case ST_STAR:               return STAR;
+        case ST_SLASH:              return SLASH;
+        default:                    return WHITESPACE;
     }
 }
 

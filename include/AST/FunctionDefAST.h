@@ -16,4 +16,4 @@ class FunctionAST {
             : Proto(std::move(Proto)), Body(std::move(Body)) {}
 };
 
-#endif
+#endif // __FUNCTION_DEF_AST_H__

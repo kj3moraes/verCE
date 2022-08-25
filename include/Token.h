@@ -14,6 +14,7 @@ enum Kind {
     PLUS,
     MINUS,
     STAR,
+    SLASH,
     BECOMES,
     EQ,
     LT,

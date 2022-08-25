@@ -8,7 +8,6 @@ class ExpressionAST {
 
     public:
         virtual ~ExpressionAST() {}
-        virtual std::string toString() const = 0;
 };
 
 #endif // __EXPR_AST_H__
