@@ -40,7 +40,7 @@ directories:
 	mkdir -p $(TARGET_DIR)
 	mkdir -p $(OBJ_DIR)
 
-# Clean only Objecst
+# Clean only Objects
 clean:
 	@$(RM) -rf $(OBJ_DIR)
 
@@ -48,7 +48,7 @@ clean:
 purge: clean
 	@$(RM) -rf $(TARGET_DIR)
 
-# Pull in dependency info for *existing* .o files
+# Pull in dependency info for existing .o files
 -include $(OBJECTS:.$(OBJ_EXT)=.$(DEP_EXT))
 
 # Link
