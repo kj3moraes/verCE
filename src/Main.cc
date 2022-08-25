@@ -1,3 +1,4 @@
+#include "Parser.h"
 #include "Token.h"
 #include "Lexer.h"
 
@@ -11,22 +12,22 @@ using namespace std;
 int main() {
     string line;
     istringstream ss; 
-    Lexer ls;
+    Lexer ls; 
     int lineNumber = 1;
 
+    vector<Token> tokens;
     while (getline(cin, line)) {
         istringstream is{line};
-        
         try {
-            vector<Token> tokens = ls.scan(line, lineNumber++);
+            tokens = ls.scan(line, lineNumber++);
             for (auto &v : tokens) {
                 cout << v << endl;
             }
         } catch(ScanningFailure &s) {
-            cerr << s.what() << endl;
             break;
         }
-
     }
+
+    
 
 }
