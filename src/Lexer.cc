@@ -155,7 +155,7 @@ std::vector<Token> Lexer::scan(std::string &input, const long lineNumber) {
        tokens  = simplifiedMaximalMunch(input);
     } catch (ScanningFailure &err) {
         std::cerr << "Scanning Failure at line " << lineNumber << ": " << std::endl;
-        std::cerr << err.what() << std::endl;
+        std::cerr << err.what() << "\n" << std::endl;
         throw ScanningFailure(err.what());
     }
     std::vector<Token> finaltokens;

@@ -1,6 +1,6 @@
 #include "Parser.h"
 
-const std::map<Kind, int> Parser::binaryOperatorPrecedence = {
+std::map<Kind, int> Parser::binaryOperatorPrecedence = {
     {LT, 10},
     {PLUS, 20},
     {MINUS, 20},
@@ -13,6 +13,13 @@ Parser::~Parser() {}
 void Parser::advance() {
     ++currentTokenIndex;
     currentToken = tokens[currentTokenIndex];
+}
+
+int Parser::getTokenPrecedence() {
+    if (binaryOperatorPrecedence.find(currentToken.getKind()) != binaryOperatorPrecedence.end()) {
+        return binaryOperatorPrecedence[currentToken.getKind()];
+    }
+    return -1;
 }
 
 std::unique_ptr<ExpressionAST> Parser::parseExpression() {
@@ -40,7 +47,38 @@ std::unique_ptr<ExpressionAST> Parser::parseParenthesisExpression() {
 
 
 std::unique_ptr<ExpressionAST> Parser::parseIdentifierExpression() {
+    std::string idName = currentToken.getLexeme();
 
+    advance();
+
+    // CASE 1: Simple variable reference.
+    if (currentToken.getKind() != LPAREN)
+        return std::make_unique<VariableExpressionAST>(idName);
+    
+
+    // CASE 2: Function call.
+    advance(); // consume the '('
+    std::vector<std::unique_ptr<ExpressionAST>> args;
+    if (currentToken.getKind() != RPAREN) {
+        while (currentToken.getKind() != RPAREN) {
+            auto arg = parseExpression();
+            if (!arg) {
+                throw CompilationFailure("expected an expression");
+                return nullptr;
+            }
+
+            args.push_back(std::move(arg));
+            
+            if (currentToken.getKind() != COMMA) {
+                throw CompilationFailure("expected ',' or ')' after argument");
+                return nullptr;
+            }
+            advance();
+        }
+    }
+    advance(); // Consume the ')'
+
+    return std::make_unique<CallExpressionAST>(idName, std::move(args));
 }
 
 
@@ -60,7 +98,34 @@ std::unique_ptr<ExpressionAST> Parser::parsePrimary() {
 
 
 std::unique_ptr<ExpressionAST> Parser::parseBinaryOperatorRHS(int precedence, std::unique_ptr<ExpressionAST> lhs) {
-    
+
+    while (true) {
+        int tokenPrecedence = getTokenPrecedence();
+        
+        // CASE 1:
+        if (tokenPrecedence < precedence) {
+            break;
+        }
+
+        // CASE 2: IS A Binary operator.
+        //      a) Pra
+        Token binaryOp = currentToken;
+        advance();
+
+        auto RHS = parsePrimary();
+        if (!RHS) 
+            return nullptr;
+
+        int nextPrecedence = getTokenPrecedence();
+        if (tokenPrecedence < nextPrecedence) {
+            RHS = parseBinaryOperatorRHS(tokenPrecedence + 1, std::move(RHS));
+            if (!RHS) 
+                return nullptr;
+        }
+
+        lhs = std::make_unique<BinaryExpressionAST>(binaryOp, std::move(lhs), std::move(RHS));
+    }
+    return lhs;
 }
 
 
@@ -102,6 +167,11 @@ std::unique_ptr<PrototypeAST> Parser::parseExtern() {
 
 
 std::unique_ptr<PrototypeAST> Parser::parsePrototypeExpression() {
+    if (currentToken.getKind() != Kind::ID) {
+        throw CompilationFailure("Expected function name in prototype");
+        return nullptr;
+    }
+
 
 }
 

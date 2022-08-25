@@ -90,7 +90,7 @@ class ScanningFailure {
     std::string message;
 
     public:
-        ScanningFailure(std::string message) : message(message) {}
+        ScanningFailure(std::string message) : message("ERROR: " + message) {}
 
         const std::string what() const { return message; };
 };

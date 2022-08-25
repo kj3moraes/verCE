@@ -4,11 +4,11 @@
 #include <cmath>
 #include "ExpressionAST.h"
 
-class VariableExprAST : public ExpressionAST {
+class VariableExpressionAST : public ExpressionAST {
     std::string Name;
 
     public:
-        VariableExprAST(const std::string &Name) : Name(Name) {}
+        VariableExpressionAST(const std::string &Name) : Name(Name) {}
 };
 
 #endif // __NUMBER_AST_H__

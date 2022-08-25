@@ -4,18 +4,19 @@
 #include <cmath>
 #include <memory>
 
+#include "Token.h"
 #include "ExpressionAST.h"
 
 class BinaryExpressionAST : public ExpressionAST {
-    char op;
+    Token op;
     std::unique_ptr<ExpressionAST> LHS, RHS;
 
     public:
-        BinaryExpressionAST(char Op, 
+        BinaryExpressionAST(Token Op, 
                       std::unique_ptr<ExpressionAST> LHS,
                       std::unique_ptr<ExpressionAST> RHS) : op(Op), LHS(std::move(LHS)), RHS(std::move(RHS)) {}
 
-        const char getOperator() const { return op; }
+        const Token getOperator() const { return op; }
 };
 
 #endif

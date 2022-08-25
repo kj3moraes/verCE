@@ -20,9 +20,20 @@ class Parser {
     unsigned long currentTokenIndex;
 
     // Define the operator precedence for the binary operators.
-    const static std::map<Kind, int> binaryOperatorPrecedence;
+    static std::map<Kind, int> binaryOperatorPrecedence;
 
+    /**
+     * @brief Increments the tracking information to point to
+     * the next token in the token vector.
+     */
     void advance();
+    
+    /**
+     * @brief Get the Token of the current token. The respective
+     * values are defined in the binaryOperatorPrecedence map.
+     * @return int - the token precedence
+     */
+    int getTokenPrecedence();
 
     std::unique_ptr<ExpressionAST> parseExpression();
 
@@ -57,8 +68,8 @@ class Parser {
         ~Parser();
 
         /**
-         * @brief Builds the AST for the entire program and returns
-         * the root of the tree.
+         * @brief Builds the AST for the entire program specified by the
+         * Token vector list and returns the root of the tree.
          * @return std::unique_ptr<ExpressionAST> is the root of the AST built from the token list.
          */
         std::unique_ptr<ExpressionAST> parseInput();      
