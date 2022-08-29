@@ -21,7 +21,7 @@ INPUT_EXT="in"
 OUTPUT_EXT="out"
 
 # Defining expecutables
-EXEC="verCE"
+EXEC="verCEProgram"
 
 for test in $(ls $TEST_DIR | egrep ".in"); do
 

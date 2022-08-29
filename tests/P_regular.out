@@ -5,11 +5,22 @@ RPAREN:)
 ID:x 
 PLUS:+ 
 ID:y 
+Handling definition
+
+Compilation failed!
+ERROR: ERROR: Expected function name in prototype
 ID:h 
 MINUS:- 
 ID:j 
 BECOMES:= 
 NUM:2 
+Handling top level expression
+Parsed successfully!
+AST: 
 EXTERN:extern 
 NUM:12 
 ID:f5 
+Handling extern
+
+Compilation failed!
+ERROR: ERROR: Expected function name in prototype
