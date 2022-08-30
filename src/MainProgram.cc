@@ -31,10 +31,9 @@ int main() {
         try {
             auto ast = ps.parseInput();
             cout << "Parsed successfully!" << endl;
-            cout << "AST: " << endl;
         } catch(CompilationFailure &c) {
             cout << "\nCompilation failed!" << endl;
-            cout << "ERROR: " <<  c.what() << endl;
+            cout << c.what() << endl;
         }
     }
 }

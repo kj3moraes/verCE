@@ -1,0 +1,13 @@
+DEF:def 
+LPAREN:( 
+ID:x 
+RPAREN:) 
+ID:e 
+MINUS:- 
+ID:x 
+PLUS:+ 
+NUM:1 
+Handling definition
+
+Compilation failed!
+ERROR: Expected function name in prototype
