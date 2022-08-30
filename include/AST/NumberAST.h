@@ -11,6 +11,8 @@ class NumberExpressionAST : public ExpressionAST {
         NumberExpressionAST(double value) : val(value) {}
 
         double getValue() const { return val; }
+
+        Value *codegen() override;
 };
 
 #endif // __NUMBER_AST_H__

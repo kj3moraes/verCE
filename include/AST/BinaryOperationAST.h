@@ -17,6 +17,8 @@ class BinaryExpressionAST : public ExpressionAST {
                       std::unique_ptr<ExpressionAST> RHS) : op(Op), LHS(std::move(LHS)), RHS(std::move(RHS)) {}
 
         const Token getOperator() const { return op; }
+
+        Value *codegen() override;
 };
 
 #endif

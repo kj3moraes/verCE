@@ -9,6 +9,8 @@ class VariableExpressionAST : public ExpressionAST {
 
     public:
         VariableExpressionAST(const std::string &Name) : Name(Name) {}
+
+        Value *codegen() override;
 };
 
 #endif // __NUMBER_AST_H__
