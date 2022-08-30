@@ -10,7 +10,7 @@ class NumberExpressionAST : public ExpressionAST {
     public:
         NumberExpressionAST(double value) : val(value) {}
 
-        const double getValue() const { return val; }
+        double getValue() const { return val; }
 };
 
 #endif // __NUMBER_AST_H__

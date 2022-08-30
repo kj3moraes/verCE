@@ -36,6 +36,7 @@ class Lexer {
 
         // Punctuality
         ST_COMMA,
+        ST_SEMI,
         ST_DOT,
         ST_WHITESPACE,
 
@@ -79,7 +80,7 @@ class Lexer {
          * @param input 
          * @return std::vector<Token> 
          */
-        std::vector<Token> scan(std::string &input, const long lineNumber);
+        std::vector<Token> scan(std::string &input, const unsigned long lineNumber);
 };
 #endif // __LEXER_H__
 
@@ -92,7 +93,7 @@ class ScanningFailure {
     public:
         ScanningFailure(std::string message) : message("ERROR: " + message) {}
 
-        const std::string what() const { return message; };
+        std::string what() const { return message; };
 };
 
 #endif // __SCAN_FAILURE_H__

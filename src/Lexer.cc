@@ -20,6 +20,7 @@ Lexer::Lexer() {
         ST_BECOMES,
         ST_EQ,
         ST_COMMA,
+        ST_SEMI,
         ST_WHITESPACE,
         ST_PLUS,
         ST_MINUS,
@@ -47,6 +48,7 @@ Lexer::Lexer() {
     registerTransition(ST_START, "*", ST_STAR);
     registerTransition(ST_START, "/", ST_SLASH);
     registerTransition(ST_START, ",", ST_COMMA);
+    registerTransition(ST_START, ";", ST_SEMI);
     registerTransition(ST_START, "#", ST_WHITESPACE);
     registerTransition(ST_START, isspace, ST_WHITESPACE);
 
@@ -76,6 +78,9 @@ Kind Lexer::stateToKind(State s) const {
         case ST_MINUS:              return MINUS;
         case ST_STAR:               return STAR;
         case ST_SLASH:              return SLASH;
+        case ST_MODULO:             return MODULO;
+        case ST_SEMI:               return SEMI;
+        case ST_COMMA:              return COMMA;
         default:                    return WHITESPACE;
     }
 }
@@ -129,6 +134,12 @@ std::vector<Token> Lexer::simplifiedMaximalMunch(const std::string &input) const
             munchedInput += *inputPosn;
             oldState = state;
             ++inputPosn;
+        }   
+
+        // Special case for variable names that start with a number
+        if (oldState == ST_NUM && state == ST_ERR && isalpha(*inputPosn)) {
+            munchedInput += *inputPosn;
+            throw ScanningFailure("Failure on input>" + munchedInput +"\nYou cannot have variable names starting with a number!");
         }
 
         if (inputPosn == input.end() || isFailed(state)) {
@@ -148,7 +159,7 @@ std::vector<Token> Lexer::simplifiedMaximalMunch(const std::string &input) const
 }
 
 
-std::vector<Token> Lexer::scan(std::string &input, const long lineNumber) {
+std::vector<Token> Lexer::scan(std::string &input, const unsigned long lineNumber) {
     
     std::vector<Token> tokens;
     try {
@@ -156,7 +167,6 @@ std::vector<Token> Lexer::scan(std::string &input, const long lineNumber) {
     } catch (ScanningFailure &err) {
         std::cerr << "Scanning Failure at line " << lineNumber << ": " << std::endl;
         std::cerr << err.what() << "\n" << std::endl;
-        throw ScanningFailure(err.what());
     }
     std::vector<Token> finaltokens;
 
@@ -171,7 +181,7 @@ std::vector<Token> Lexer::scan(std::string &input, const long lineNumber) {
             finaltokens.emplace_back(it->second, it->first);
             continue;
         } else if (t.getKind() == WHITESPACE) {
-            if ( t.getLexeme()[0] == COMMENT_INIT) break;
+            if (t.getLexeme()[0] == COMMENT_INIT) break;
             else continue;
         } 
         finaltokens.push_back(t);

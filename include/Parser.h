@@ -33,7 +33,7 @@ class Parser {
      * values are defined in the binaryOperatorPrecedence map.
      * @return int - the token precedence
      */
-    int getTokenPrecedence();
+    const int getTokenPrecedence();
 
     std::unique_ptr<ExpressionAST> parseExpression();
 
@@ -85,9 +85,9 @@ class CompilationFailure {
     std::string message;
 
     public:
-        CompilationFailure(const std::string& message) : message(message) {}
+        CompilationFailure(const std::string& message) : message("ERROR: " + message) {}
 
-        const std::string what() const { return message; }
+        std::string what() const { return message; }
 };
 
 #endif // __COMPILATION_FAILURE_H__

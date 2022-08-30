@@ -4,7 +4,7 @@
 #include <cmath>
 #include <memory>
 
-#include "Token.h"
+#include "../Token.h"
 #include "ExpressionAST.h"
 
 class BinaryExpressionAST : public ExpressionAST {

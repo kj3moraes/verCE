@@ -19,13 +19,16 @@ std::ostream &operator<<(std::ostream &out, const Token &tok) {
         case MINUS:      out << "MINUS";      break; 
         case STAR:       out << "STAR";       break;
         case SLASH:      out << "SLASH";      break;
+        case MODULO:     out << "MODULO";     break;
         case LPAREN:     out << "LPAREN";     break;
         case RPAREN:     out << "RPAREN";     break;
         case COMMA:      out << "COMMA";      break;
+        case SEMI:       out << "SEMI";       break;
         case DOT:        out << "DOT";        break;
         case DEF:        out << "DEF";        break;
         case EXTERN:     out << "EXTERN";     break;
         case WHITESPACE: out << "WHITESPACE"; break;
+        case END_OF_FILE:out << "//:eof://";  break;
     }
     out << ":" << tok.getLexeme() << " ";
 

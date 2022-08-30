@@ -1,3 +1,4 @@
+#include "Token.h"
 #include "Parser.h"
 
 std::map<Kind, int> Parser::binaryOperatorPrecedence = {
@@ -15,7 +16,7 @@ void Parser::advance() {
     currentToken = tokens[currentTokenIndex];
 }
 
-int Parser::getTokenPrecedence() {
+const int Parser::getTokenPrecedence() {
     if (binaryOperatorPrecedence.find(currentToken.getKind()) != binaryOperatorPrecedence.end()) {
         return binaryOperatorPrecedence[currentToken.getKind()];
     }
@@ -119,7 +120,7 @@ std::unique_ptr<ExpressionAST> Parser::parseBinaryOperatorRHS(int precedence, st
         int nextPrecedence = getTokenPrecedence();
         if (tokenPrecedence < nextPrecedence) {
             RHS = parseBinaryOperatorRHS(tokenPrecedence + 1, std::move(RHS));
-            if (!RHS) 
+            if (!RHS)
                 return nullptr;
         }
 
@@ -133,7 +134,7 @@ std::unique_ptr<NumberExpressionAST> Parser::parseNumberExpression() {
     double number = std::stod(currentToken.getLexeme());
     auto result = std::make_unique<NumberExpressionAST>(number);
     advance();
-    return std::move(result);
+    return result;
 }
 
 
@@ -172,12 +173,55 @@ std::unique_ptr<PrototypeAST> Parser::parsePrototypeExpression() {
         return nullptr;
     }
 
+    std::string functionName = currentToken.getLexeme();
+    advance();
 
+    if (currentToken.getKind() != Kind::LPAREN) {
+        throw CompilationFailure("Expected a '(' in the prototype");
+        return nullptr;
+    }
+
+    std::vector<std::string> argumentNames;
+    advance();
+    while (currentToken.getKind() == Kind::ID) {
+        argumentNames.push_back(currentToken.getLexeme());
+        advance();
+    }
+
+    if (currentToken.getKind() != Kind::RPAREN) {
+        throw CompilationFailure("Expected a ')' in the prototype");
+        return nullptr;
+    }
+
+    advance();
+    
+    return std::make_unique<PrototypeAST>(functionName, std::move(argumentNames));
 }
 
 std::unique_ptr<ExpressionAST> Parser::parseInput() {
-    for (unsigned long i = 0; i < tokens.size(); ++i) {
-        std::cout << tokens[i] << std::endl;
-    }
 
+    while (currentToken.getKind() != Kind::END_OF_FILE) {
+        switch (currentToken.getKind()) {
+            case Kind::DEF:
+            {
+                std::cout << "Handling definition" << std::endl;
+                const auto a = parseDefintion();
+                std::cout << currentToken << std::endl;
+                break;
+            }
+                
+            case Kind::EXTERN:
+            {
+                std::cout << "Handling extern" << std::endl;
+                const auto a = parseExtern();
+                break;
+            }
+
+            default:
+                std::cout << "Handling top level expression" << std::endl;
+                const auto a = parseTopLevelExpression();
+                break;
+        }
+    }
+    return nullptr;
 }

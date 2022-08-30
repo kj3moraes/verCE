@@ -27,17 +27,18 @@ int main() {
                 cout << v << endl;
             }
         } catch(ScanningFailure &s) {
+            cout << s.what() << endl;
             break;
         }
+        tokens.emplace_back(END_OF_FILE, "eof");
 
         Parser ps{tokens};
         try {
             auto ast = ps.parseInput();
             cout << "Parsed successfully!" << endl;
-            cout << "AST: " << endl;
         } catch(CompilationFailure &c) {
             cout << "\nCompilation failed!" << endl;
-            cout << "ERROR: " <<  c.what() << endl;
+            cout << c.what() << endl;
         }
     }
 }

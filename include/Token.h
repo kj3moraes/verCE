@@ -15,16 +15,19 @@ enum Kind {
     MINUS,
     STAR,
     SLASH,
+    MODULO,
     BECOMES,
     EQ,
     LT,
     LPAREN,
     RPAREN,
     COMMA,
+    SEMI,
     DOT,
     DEF,
     EXTERN,
     WHITESPACE,
+    END_OF_FILE,
 };
 
 class Token {

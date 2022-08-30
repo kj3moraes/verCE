@@ -10,30 +10,42 @@
 using namespace std;
 
 int main() {
-    string line;
-    istringstream ss; 
+    string line; 
     Lexer ls; 
-    int lineNumber = 1;
+    unsigned long lineNumber = 1;
 
-    vector<Token> tokens;
+    vector<Token> tokens, lineToks;
+    vector<std::string> linesOfCode;
+
+    // Collect code line by line and tokenize each line.
     while (true) {
         getline(cin, line);
-        try {
-            tokens = ls.scan(line, lineNumber++);
-            for (auto &v : tokens) {
-                cout << v << endl;
-            }
-        } catch(ScanningFailure &s) {
+        if (cin.eof()) {
             break;
         }
-
-        Parser ps{tokens};
         try {
-            auto ast = ps.parseInput();
-            cout << "Parsed successfully!" << endl;
-        } catch(CompilationFailure &c) {
-            cout << "\nCompilation failed!" << endl;
-            cout << c.what() << endl;
+            lineToks = ls.scan(line, lineNumber++);
+        } catch(ScanningFailure &s) {
+            cerr << "Scanning Failed!" << endl;
+            cerr << s.what() << endl;
+            break;
         }
+        tokens.insert(tokens.end(), lineToks.begin(), lineToks.end());
+    }
+    tokens.emplace_back(END_OF_FILE, "eof");
+
+    // Print out all the tokens
+    for (auto &v : tokens) {
+        cout << v << endl;
+    }
+    
+    // Construct a parser object for the tokenlist of the whole program.
+    Parser ps{tokens};
+    try {
+        auto ast = ps.parseInput();
+        cout << "Parsed successfully!" << endl;
+    } catch(CompilationFailure &c) {
+        cerr << "\nCompilation failed!" << endl;
+        cerr << c.what() << endl;
     }
 }
