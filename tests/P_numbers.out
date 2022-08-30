@@ -1,25 +1,21 @@
 ID:x 
 BECOMES:= 
 NUM:12 
-Handling top level expression
-Parsed successfully!
 ID:x 
 BECOMES:= 
 NUM:1.0 
-Handling top level expression
-Parsed successfully!
 ID:x 
 BECOMES:= 
 NUM:0.1 
-Handling top level expression
-Parsed successfully!
 ID:x 
 BECOMES:= 
 NUM:99 
-Handling top level expression
-Parsed successfully!
 ID:x 
 BECOMES:= 
 NUM:1234567890.987654321 
+//:eof://:eof 
 Handling top level expression
-Parsed successfully!
+Handling top level expression
+
+Compilation failed!
+ERROR: Unknown token when expecting an expression

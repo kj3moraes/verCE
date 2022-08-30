@@ -1,3 +1,5 @@
 Scanning Failure at line 1: 
 ERROR: Failure on input>.
 
+//:eof://:eof 
+Parsed successfully!

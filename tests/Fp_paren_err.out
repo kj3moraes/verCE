@@ -1,26 +1,16 @@
 DEF:def 
-ID:add 
+ID:why 
 LPAREN:( 
-ID:x 
-ID:y 
+ID:f 
 RPAREN:) 
-ID:x 
+ID:f 
 PLUS:+ 
-ID:y 
-ID:h 
-MINUS:- 
-ID:j 
-BECOMES:= 
-NUM:2 
-EXTERN:extern 
-ID:sin 
-LPAREN:( 
-ID:arg 
+NUM:1 
 RPAREN:) 
+SEMI:; 
 //:eof://:eof 
 Handling definition
-ID:h 
-Handling top level expression
+RPAREN:) 
 Handling top level expression
 
 Compilation failed!
