@@ -17,7 +17,7 @@ class CallExpressionAST : public ExpressionAST {
             : Callee(Callee), Args(std::move(Args)) {}
 
 
-        Value *codegen() override;  
+        Value *accept(Visitor *gen) override { return gen->visit(this);}  
 };
 
 #endif // __FUNCTION_CALL_AST_H__

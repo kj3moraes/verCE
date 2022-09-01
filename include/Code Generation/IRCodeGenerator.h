@@ -1,17 +1,5 @@
-#ifndef __IR_CODE_GENERATOR_H__
-#define __IR_CODE_GENERATOR_H__
-
-#include "llvm/ADT/APFloat.h"
-#include "llvm/ADT/STLExtras.h"
-#include "llvm/IR/BasicBlock.h"
-#include "llvm/IR/Constants.h"
-#include "llvm/IR/DerivedTypes.h"
-#include "llvm/IR/Function.h"
-#include "llvm/IR/IRBuilder.h"
-#include "llvm/IR/LLVMContext.h"
-#include "llvm/IR/Module.h"
-#include "llvm/IR/Type.h"
-#include "llvm/IR/Verifier.h"
+#ifndef __LLVM_IR_CODE_GENERATOR_H__
+#define __LLVM_IR_CODE_GENERATOR_H__
 
 #include <algorithm>
 #include <cctype>
@@ -24,15 +12,27 @@
 
 #include "../AST.h"
 #include "Visitor.h"
+#include "LLVMIncludes.h"
 
 using namespace llvm;
 
-class IRCodeGenerator : public Visitor {
+class LLVMIRCodeGenerator : public Visitor {
     private:
-        LLVMContext TheContext;
-        IRBuilder<> Builder(LLVMContext TheContext);
+        std::unique_ptr<LLVMContext> TheContext;
+        std::unique_ptr<IRBuilder<>> Builder;
         std::unique_ptr<Module> TheModule;
         std::map<std::string, Value *> NamedValues;
+
+    public:
+        LLVMIRCodeGenerator();
+        ~LLVMIRCodeGenerator();
+
+        Value *visit(BinaryExpressionAST *ast) override;
+        Value *visit(NumberExpressionAST *ast) override;
+        Value *visit(VariableExpressionAST *ast) override;
+        Value *visit(PrototypeAST *ast) override;
+        Value *visit(CallExpressionAST *ast) override;
+        Value *visit(FunctionAST *ast) override;
 
 
 };

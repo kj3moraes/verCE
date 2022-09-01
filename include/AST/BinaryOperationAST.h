@@ -18,7 +18,10 @@ class BinaryExpressionAST : public ExpressionAST {
 
         const Token getOperator() const { return op; }
 
-        Value *codegen() override;
+        ExpressionAST *getLHS() const { return LHS.get(); }
+        ExpressionAST *getRHS() const { return RHS.get(); }
+
+        Value *accept(Visitor *gen) override { return gen->visit(this);}
 };
 
 #endif

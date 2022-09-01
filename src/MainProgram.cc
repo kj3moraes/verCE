@@ -44,7 +44,7 @@ int main() {
     try {
         auto ast = ps.parseInput();
         cout << "Parsed successfully!" << endl;
-    } catch(CompilationFailure &c) {
+    } catch(CodeGenerationFailure &c) {
         cerr << "\nCompilation failed!" << endl;
         cerr << c.what() << endl;
     }
