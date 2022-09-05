@@ -10,7 +10,7 @@ class VariableExpressionAST : public ExpressionAST {
     public:
         VariableExpressionAST(const std::string &Name) : Name(Name) {}
 
-        Value *accept(Visitor *gen) override { return gen->visit(this);}
+        Value *accept(Visitor *gen) override { return gen->visitVariable(this);}
 };
 
 #endif // __NUMBER_AST_H__

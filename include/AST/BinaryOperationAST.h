@@ -21,7 +21,7 @@ class BinaryExpressionAST : public ExpressionAST {
         ExpressionAST *getLHS() const { return LHS.get(); }
         ExpressionAST *getRHS() const { return RHS.get(); }
 
-        Value *accept(Visitor *gen) override { return gen->visit(this);}
+        Value *accept(Visitor *gen) override { return gen->visitBinaryOp(this);}
 };
 
 #endif

@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include "../Code Generation/Visitor.h"
+#include "../CodeGeneration/Visitor.h"
 
 using namespace llvm;
 class ExpressionAST {

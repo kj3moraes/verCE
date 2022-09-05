@@ -12,7 +12,7 @@ class NumberExpressionAST : public ExpressionAST {
 
         double getValue() const { return val; }
 
-        Value *accept(Visitor *gen) override { return gen->visit(this);}
+        Value *accept(Visitor *gen) override { return gen->visitNumber(this);}
 };
 
 #endif // __NUMBER_AST_H__

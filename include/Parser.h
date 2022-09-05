@@ -81,11 +81,11 @@ class Parser {
 #ifndef __COMPILATION_FAILURE_H__
 #define __COMPILATION_FAILURE_H__
 
-class CodeGenerationFailure {
+class CompilationFailure {
     std::string message;
 
     public:
-        CodeGenerationFailure(const std::string& message) : message("ERROR (parsing): " + message) {}
+        CompilationFailure(const std::string& message) : message("ERROR (parsing): " + message) {}
 
         std::string what() const { return message; }
 };

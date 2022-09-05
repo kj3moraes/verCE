@@ -5,7 +5,7 @@
 
 #include "ExpressionAST.h"
 #include "PrototypeAST.h"
-#include "../Code Generation/Visitor.h"
+#include "../CodeGeneration/Visitor.h"
 
 class FunctionAST {
     std::unique_ptr<PrototypeAST> Proto;    
@@ -16,7 +16,7 @@ class FunctionAST {
                     std::unique_ptr<ExpressionAST> Body)
             : Proto(std::move(Proto)), Body(std::move(Body)) {}
         
-        Value *accept(Visitor *gen) { return gen->visit(this);}
+        Value *accept(Visitor *gen) { return gen->visitFunctionDef(this);}
 };
 
 #endif // __FUNCTION_DEF_AST_H__

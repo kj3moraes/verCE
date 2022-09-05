@@ -27,12 +27,12 @@ class LLVMIRCodeGenerator : public Visitor {
         LLVMIRCodeGenerator();
         ~LLVMIRCodeGenerator();
 
-        Value *visit(BinaryExpressionAST *ast) override;
-        Value *visit(NumberExpressionAST *ast) override;
-        Value *visit(VariableExpressionAST *ast) override;
-        Value *visit(PrototypeAST *ast) override;
-        Value *visit(CallExpressionAST *ast) override;
-        Value *visit(FunctionAST *ast) override;
+        Value *visitBinaryOp(const BinaryExpressionAST *ast) const override;
+        Value *visitNumber(const NumberExpressionAST *ast) const override;
+        Value *visitVariable(const VariableExpressionAST *ast) const override;
+        Value *visitPrototype(const PrototypeAST *ast) const override;
+        Value *visitCallExpr(const CallExpressionAST *ast) const override;
+        Value *visitFunctionDef(const FunctionAST *ast) const override;
 
 
 };

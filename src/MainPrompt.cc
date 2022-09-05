@@ -1,6 +1,7 @@
 #include "Parser.h"
 #include "Token.h"
 #include "Lexer.h"
+#include "CodeGeneration.h"
 
 #include <iomanip>
 #include <iostream>
@@ -40,5 +41,7 @@ int main() {
             cout << "\nCompilation failed!" << endl;
             cout << c.what() << endl;
         }
+
+        LLVMIRCodeGenerator cg{};
     }
 }

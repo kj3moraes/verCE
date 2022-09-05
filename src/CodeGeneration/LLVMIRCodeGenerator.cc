@@ -1,4 +1,4 @@
-#include "IRCodeGenerator.h"
+#include "CodeGeneration.h"
 
 LLVMIRCodeGenerator::LLVMIRCodeGenerator() {
 // Open a new context and module.
@@ -11,7 +11,7 @@ LLVMIRCodeGenerator::LLVMIRCodeGenerator() {
     
 
 
-Value *LLVMIRCodeGenerator::visit(BinaryExpressionAST *ast) {
+Value *LLVMIRCodeGenerator::visitBinaryOp(const BinaryExpressionAST *ast) const {
     Value *lhs = ast->getLHS()->accept(this);
     Value *rhs = ast->getRHS()->accept(this);
     switch (ast->getOperator().getKind()) {
@@ -28,7 +28,7 @@ Value *LLVMIRCodeGenerator::visit(BinaryExpressionAST *ast) {
     }
 }
 
-Value *LLVMIRCodeGenerator::visit(NumberExpressionAST *ast) {
+Value *LLVMIRCodeGenerator::visitNumber(const NumberExpressionAST *ast) const {
     return ConstantFP::get(*TheContext, APFloat(ast->getValue()));
 }
 
