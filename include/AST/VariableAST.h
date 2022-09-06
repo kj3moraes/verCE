@@ -3,6 +3,7 @@
 
 #include <cmath>
 #include "ExpressionAST.h"
+#include "../CodeGeneration.h"
 
 class VariableExpressionAST : public ExpressionAST {
     std::string Name;
@@ -10,7 +11,7 @@ class VariableExpressionAST : public ExpressionAST {
     public:
         VariableExpressionAST(const std::string &Name) : Name(Name) {}
 
-        Value *accept(Visitor *gen) override { return gen->visitVariable(this);}
+        Value *accept(const Visitor *gen) override;
 };
 
 #endif // __NUMBER_AST_H__

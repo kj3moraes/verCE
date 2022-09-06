@@ -4,8 +4,8 @@
 #include <string>
 #include <vector>
 
-#include "ExpressionAST.h"
-#include "../CodeGeneration/Visitor.h"
+#include "../CodeGeneration.h"
+using namespace llvm;
 
 class PrototypeAST {
     std::string Name;
@@ -17,7 +17,7 @@ class PrototypeAST {
 
         const std::string &getName() const { return Name; }
 
-        Value *accept(Visitor *gen) { return gen->visitPrototype(this);}
+        Value *accept(const Visitor *gen);
 };
 
 #endif // __PROTOTYPE_AST_H__

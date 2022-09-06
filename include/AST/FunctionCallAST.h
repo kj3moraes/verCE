@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "ExpressionAST.h"
+#include "../CodeGeneration.h"
 
 class CallExpressionAST : public ExpressionAST {
     std::string Callee;
@@ -17,7 +18,7 @@ class CallExpressionAST : public ExpressionAST {
             : Callee(Callee), Args(std::move(Args)) {}
 
 
-        Value *accept(Visitor *gen) override { return gen->visitCallExpr(this);}  
+        Value *accept(const Visitor *gen) override;
 };
 
 #endif // __FUNCTION_CALL_AST_H__

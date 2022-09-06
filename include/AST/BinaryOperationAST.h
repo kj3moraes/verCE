@@ -6,6 +6,8 @@
 
 #include "../Token.h"
 #include "ExpressionAST.h"
+#include "../CodeGeneration.h"
+using namespace llvm;
 
 class BinaryExpressionAST : public ExpressionAST {
     Token op;
@@ -21,7 +23,7 @@ class BinaryExpressionAST : public ExpressionAST {
         ExpressionAST *getLHS() const { return LHS.get(); }
         ExpressionAST *getRHS() const { return RHS.get(); }
 
-        Value *accept(Visitor *gen) override { return gen->visitBinaryOp(this);}
+        Value *accept(const Visitor *gen) override;
 };
 
 #endif

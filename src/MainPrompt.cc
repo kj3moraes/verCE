@@ -1,7 +1,7 @@
+#include "CodeGeneration/LLVMIRCodeGenerator.h"
 #include "Parser.h"
 #include "Token.h"
 #include "Lexer.h"
-#include "CodeGeneration.h"
 
 #include <iomanip>
 #include <iostream>

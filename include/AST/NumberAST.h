@@ -2,7 +2,9 @@
 #define __NUMBER_AST_H__
 
 #include <cmath>
+
 #include "ExpressionAST.h"
+#include "../CodeGeneration.h"
 
 class NumberExpressionAST : public ExpressionAST {
     double val;
@@ -12,7 +14,7 @@ class NumberExpressionAST : public ExpressionAST {
 
         double getValue() const { return val; }
 
-        Value *accept(Visitor *gen) override { return gen->visitNumber(this);}
+        Value *accept(const Visitor *gen) override;
 };
 
 #endif // __NUMBER_AST_H__

@@ -11,8 +11,8 @@
 #include <vector>
 
 #include "../AST.h"
+#include "../CodeGeneration.h"
 #include "Visitor.h"
-#include "LLVMIncludes.h"
 
 using namespace llvm;
 
@@ -33,8 +33,6 @@ class LLVMIRCodeGenerator : public Visitor {
         Value *visitPrototype(const PrototypeAST *ast) const override;
         Value *visitCallExpr(const CallExpressionAST *ast) const override;
         Value *visitFunctionDef(const FunctionAST *ast) const override;
-
-
 };
 
 #endif

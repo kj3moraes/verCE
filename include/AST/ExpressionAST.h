@@ -3,15 +3,16 @@
 
 #include <string>
 
-#include "../CodeGeneration/Visitor.h"
-
+class Visitor;
+#include "../CodeGeneration.h"
 using namespace llvm;
+
 class ExpressionAST {
     std::string value;
 
     public:
         virtual ~ExpressionAST() {}
-        virtual Value *accept(Visitor *gen) = 0;
+        virtual Value *accept(const Visitor *gen) = 0;
 };
 
 #endif // __EXPR_AST_H__

@@ -2,7 +2,7 @@
 #define __VISITOR_H__
 
 #include "../AST.h"
-#include "LLVMIncludes.h"
+#include "../CodeGeneration.h"
 
 using namespace llvm;
 
@@ -13,6 +13,7 @@ class VariableExpressionAST;
 class CallExpressionAST;
 class FunctionAST;
 class PrototypeAST;
+
 class Visitor {
     public:
         virtual ~Visitor() {}

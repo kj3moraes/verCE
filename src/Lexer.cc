@@ -139,7 +139,7 @@ std::vector<Token> Lexer::simplifiedMaximalMunch(const std::string &input) const
         // Special case for variable names that start with a number
         if (oldState == ST_NUM && state == ST_ERR && isalpha(*inputPosn)) {
             munchedInput += *inputPosn;
-            throw ScanningFailure("Failure on input>" + munchedInput +"\nYou cannot have variable names starting with a number!");
+            // throw ScanningFailure("Failure on input>" + munchedInput +"\nYou cannot have variable names starting with a number!");
         }
 
         if (inputPosn == input.end() || isFailed(state)) {
@@ -151,7 +151,7 @@ std::vector<Token> Lexer::simplifiedMaximalMunch(const std::string &input) const
                 if (isFailed(state)) {
                     munchedInput += *inputPosn;
                 }
-                throw ScanningFailure("Failure on input>" + munchedInput);
+                // throw ScanningFailure("Failure on input>" + munchedInput);
             }
         }
     }
