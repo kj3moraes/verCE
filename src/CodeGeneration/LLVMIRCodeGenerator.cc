@@ -32,5 +32,3 @@ Value *LLVMIRCodeGenerator::visitNumber(const NumberExpressionAST *ast) const {
     return ConstantFP::get(*TheContext, APFloat(ast->getValue()));
 }
 
-
-

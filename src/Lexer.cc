@@ -139,7 +139,7 @@ std::vector<Token> Lexer::simplifiedMaximalMunch(const std::string &input) const
         // Special case for variable names that start with a number
         if (oldState == ST_NUM && state == ST_ERR && isalpha(*inputPosn)) {
             munchedInput += *inputPosn;
-            // throw ScanningFailure("Failure on input>" + munchedInput +"\nYou cannot have variable names starting with a number!");
+            return {Token(ID, "ERROR:Failure on input>" + munchedInput +"\nYou cannot have variable names starting with a number!")};
         }
 
         if (inputPosn == input.end() || isFailed(state)) {
@@ -151,7 +151,7 @@ std::vector<Token> Lexer::simplifiedMaximalMunch(const std::string &input) const
                 if (isFailed(state)) {
                     munchedInput += *inputPosn;
                 }
-                // throw ScanningFailure("Failure on input>" + munchedInput);
+                return {Token(ID, "ERROR:Failure on input>" + munchedInput +"\nYou have an invalid character!")};
             }
         }
     }
@@ -162,11 +162,11 @@ std::vector<Token> Lexer::simplifiedMaximalMunch(const std::string &input) const
 std::vector<Token> Lexer::scan(std::string &input, const unsigned long lineNumber) {
     
     std::vector<Token> tokens;
-    try {
-       tokens  = simplifiedMaximalMunch(input);
-    } catch (ScanningFailure &err) {
-        std::cerr << "Scanning Failure at line " << lineNumber << ": " << std::endl;
-        std::cerr << err.what() << "\n" << std::endl;
+    tokens  = simplifiedMaximalMunch(input);
+    if (tokens.size() >= 1 && tokens[0].getKind() == Kind::ID && tokens[0].getLexeme().find("ERROR") != std::string::npos) {
+        tokens.clear();
+        tokens.emplace_back(ID, "ERROR:Failure on input>" + input +"\nYou have an invalid character!");
+        return tokens;
     }
     std::vector<Token> finaltokens;
 

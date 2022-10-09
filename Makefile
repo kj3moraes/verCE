@@ -22,8 +22,9 @@ DEP_EXT 		:= d
 OBJ_EXT			:= o
 
 # Flags and Libraries
-CXX_FLAGS 		:= -std=c++14 -Wall -Wextra -Wpedantic -g -O0 -fcxx-exceptions
+CXX_FLAGS 		:= -std=c++14 -Wall -Wextra -Wpedantic -g -O0
 LIB_FLAGS 		:= -lm -lLLVM-13
+LLVM_LIB_SPEC	:= `llvm-config --cxxflags --ldflags --system-libs --libs core`
 INC_FLAGS 		:= -I$(INCLUDE_DIR) -I/usr/local/include -I.
 INC_DEP			:= -I$(INCLUDE_DIR)
 
@@ -85,7 +86,7 @@ $(TARGET_PRG): $(OBJECTS_PRG)
 # Compile
 $(OBJ_DIR)/%.$(OBJ_EXT): $(SRC_DIR)/%.$(SRC_EXT)
 	@mkdir -p $(dir $@)
-	$(CXX) $(CXX_FLAGS) `llvm-config --cxxflags --ldflags --system-libs --libs core` $(INC_FLAGS) -c -o $@ $<
+	$(CXX) $(CXX_FLAGS) $(LLVM_LIB_SPEC	) $(INC_FLAGS) -c -o $@ $<
 	@$(CXX) $(CXX_FLAGS) $(INC_DEP) -MM $(SRC_DIR)/$*.$(SRC_EXT) > $(OBJ_DIR)/$*.$(DEP_EXT)
 	@cp -f $(OBJ_DIR)/$*.$(DEP_EXT) $(OBJ_DIR)/$*.$(DEP_EXT).tmp
 	@sed -e 's|.*:|$(OBJ_DIR)/$*.$(OBJ_EXT):|' < $(OBJ_DIR)/$*.$(DEP_EXT).tmp > $(OBJ_DIR)/$*.$(DEP_EXT)
