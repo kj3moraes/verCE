@@ -9,6 +9,8 @@ LLVMIRCodeGenerator::LLVMIRCodeGenerator() {
   Builder = std::make_unique<IRBuilder<>>(*TheContext);
 }
     
+LLVMIRCodeGenerator::~LLVMIRCodeGenerator() {
+}
 
 
 Value *LLVMIRCodeGenerator::visitBinaryOp(const BinaryExpressionAST *ast) const {

@@ -7,7 +7,7 @@ A language frontend with LLVM pronounced like the word '_verse_'. This language 
 * Function calls
 * `extern` keyword
 
-More features will be added soon. Refer to the `LANGUAGE_DOC.md` for information on how to use the language, what is supported and how to get started.
+More features will be added soon. Refer to `docs/LANGUAGE_DOC.md` for information on how to use the language, what is supported and how to get started.
 
 ## Building and Experimenting
 
@@ -17,10 +17,26 @@ To build the program, just type `make all` when you are in the root directory. T
 * LLVM>=3.6
 * GNU Make
 
-To rebuild completely, type
+To rebuild completely again, type
 
 ```bash
 make remake
+```
+
+## Code Structure
+The following documents the code structure of the project - what each directory does and where to find what.
+```
+verCe
+├── bin
+│   └── verce           : executable
+├── build               : directory where object files are stored
+├── docs                : documentation
+├── include             : header files
+├── src                 : source files
+├── tests               : test files with GTEST framework
+│   └── unit_tests      : unit tests
+│   └── full_tests      : complete program tests
+
 ```
 
 ## References
