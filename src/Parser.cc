@@ -202,14 +202,17 @@ std::unique_ptr<PrototypeAST> Parser::parsePrototypeExpression() {
     return std::make_unique<PrototypeAST>(functionName, std::move(argumentNames));
 }
 
+
 std::unique_ptr<NodeAST> Parser::parseInput() {
 
+    std::unique_ptr<NodeAST> result;
     while (currentToken.getKind() != Kind::END_OF_FILE) {
         switch (currentToken.getKind()) {
+
             case Kind::DEF:
             {
                 std::cout << "Handling definition" << std::endl;
-                const auto a = parseDefintion();
+                result  = parseDefintion();
                 std::cout << currentToken << std::endl;
                 break;
             }
@@ -217,15 +220,15 @@ std::unique_ptr<NodeAST> Parser::parseInput() {
             case Kind::EXTERN:
             {
                 std::cout << "Handling extern" << std::endl;
-                const auto a = parseExtern();
+                result = parseExtern();
                 break;
             }
 
             default:
                 std::cout << "Handling top level expression" << std::endl;
-                const auto a = parseTopLevelExpression();
+                result = parseTopLevelExpression();
                 break;
         }
     }
-    return nullptr;
+    return result;
 }

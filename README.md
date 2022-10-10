@@ -1,11 +1,13 @@
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 # verCE
 
 A language frontend with LLVM pronounced like the word '_verse_'. This language has almost python-like syntax with a few tidbits from C/C++. The compiler currently supports :
 
-* Only `double` type variables
+* `double` type variables
 * Binary operations
-* Function calls
+* Function calls and definitions
 * `extern` keyword
+* Interpreted mode
 
 More features will be added soon. Refer to `docs/LANGUAGE_DOC.md` for information on how to use the language, what is supported and how to get started.
 
