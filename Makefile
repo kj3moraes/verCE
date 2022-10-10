@@ -4,6 +4,7 @@ CXX				:= clang++
 # Target executable(s)
 TARGET_PRM		:= verCEPrompt
 TARGET_PRG		:= verCEProgram
+LIBRARY			:= libverCE.a
 
 # Main for the two variants
 MAIN_PRM 		:= MainPrompt.cc
@@ -35,7 +36,7 @@ INC_DEP			:= -I$(INCLUDE_DIR)
 # =================================== COMMON FUNCS ======================================
 
 # Default Make
-all: directories $(TARGET_PRM) # $(TARGET_PRM)
+all: directories $(LIBRARY) $(TARGET_PRM) # $(TARGET_PRG)
 
 # Remake the executable
 remake: purge all
@@ -54,7 +55,7 @@ purge: clean
 	@$(RM) -rf $(TARGET_DIR)
 
 
-# =================================== TEST PROMPT =======================================
+# =================================== PROMPT =======================================
 
 SOURCES_PRM     := $(shell find $(SRC_DIR) -type f ! -name $(MAIN_PRG) -name *.$(SRC_EXT))
 OBJECTS_PRM     := $(patsubst $(SRC_DIR)/%,$(OBJ_DIR)/%,$(SOURCES_PRM:.$(SRC_EXT)=.$(OBJ_EXT)))
@@ -69,7 +70,7 @@ $(TARGET_PRM): $(OBJECTS_PRM)
 # =======================================================================================
 
 
-# ================================== TEST PROGRAM =======================================
+# ================================== PROGRAM =======================================
 
 SOURCES_PRG     := $(shell find $(SRC_DIR) -type f ! -name $(MAIN_PRM) -name *.$(SRC_EXT))
 OBJECTS_PRG     := $(patsubst $(SRC_DIR)/%,$(OBJ_DIR)/%,$(SOURCES_PRG:.$(SRC_EXT)=.$(OBJ_EXT)))
@@ -83,10 +84,14 @@ $(TARGET_PRG): $(OBJECTS_PRG)
 
 # =======================================================================================
 
+$(LIBRARY): $(OBJECTS_PRM) $(OBJECTS_PRG)
+	ar rcs $(TARGET_DIR)/$(LIBRARY) $^
+
+
 # Compile
 $(OBJ_DIR)/%.$(OBJ_EXT): $(SRC_DIR)/%.$(SRC_EXT)
 	@mkdir -p $(dir $@)
-	$(CXX) $(CXX_FLAGS) $(LLVM_LIB_SPEC	) $(INC_FLAGS) -c -o $@ $<
+	$(CXX) $(CXX_FLAGS) $(LLVM_LIB_SPEC) $(INC_FLAGS) -c -o $@ $<
 	@$(CXX) $(CXX_FLAGS) $(INC_DEP) -MM $(SRC_DIR)/$*.$(SRC_EXT) > $(OBJ_DIR)/$*.$(DEP_EXT)
 	@cp -f $(OBJ_DIR)/$*.$(DEP_EXT) $(OBJ_DIR)/$*.$(DEP_EXT).tmp
 	@sed -e 's|.*:|$(OBJ_DIR)/$*.$(OBJ_EXT):|' < $(OBJ_DIR)/$*.$(DEP_EXT).tmp > $(OBJ_DIR)/$*.$(DEP_EXT)

@@ -24,18 +24,26 @@ make remake
 ```
 
 ## Code Structure
+
 The following documents the code structure of the project - what each directory does and where to find what.
-```
+
+```text
 verCe
 ├── bin
-│   └── verce           : executable
-├── build               : directory where object files are stored
+│   └── verce           : executable file
+├── build               : object/build files
 ├── docs                : documentation
 ├── include             : header files
+│   └── AST             : AST header files
+│   └── CodeGeneration  : IR generation header files
+├── lib                 : libraries
 ├── src                 : source files
+│   └── CodeGeneration  : IR generation source files
 ├── tests               : test files with GTEST framework
 │   └── unit_tests      : unit tests
 │   └── full_tests      : complete program tests
+├── Makefile            : makefile
+├── README.md           : this file
 
 ```
 

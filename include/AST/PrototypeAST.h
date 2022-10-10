@@ -16,8 +16,10 @@ class PrototypeAST {
             : Name(Name), Args(std::move(Args)) {}
 
         const std::string &getName() const { return Name; }
-
-        Value *accept(const Visitor *gen);
+        const std::vector<std::string> &getArgs() const { return Args; }
+        const unsigned long getNumberOfArgs() const { return Args.size(); }
+        
+        Function *accept(const Visitor *gen);
 };
 
 #endif // __PROTOTYPE_AST_H__

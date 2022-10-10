@@ -23,16 +23,18 @@ class LLVMIRCodeGenerator : public Visitor {
         std::unique_ptr<Module> TheModule;
         std::map<std::string, Value *> NamedValues;
 
+        Value *visitBinaryOp(const BinaryExpressionAST *ast) const override;
+        Value *visitNumber(const NumberExpressionAST *ast) const override;
+        Value *visitVariable(const VariableExpressionAST *ast) const override;
+        Value *visitCallExpr(const CallExpressionAST *ast) const override;
+        Function *visitPrototype(const PrototypeAST *ast) const override;
+        Function *visitFunctionDef(const FunctionAST *ast) override;
+    
     public:
         LLVMIRCodeGenerator();
         ~LLVMIRCodeGenerator();
 
-        Value *visitBinaryOp(const BinaryExpressionAST *ast) const override;
-        Value *visitNumber(const NumberExpressionAST *ast) const override;
-        Value *visitVariable(const VariableExpressionAST *ast) const override;
-        Value *visitPrototype(const PrototypeAST *ast) const override;
-        Value *visitCallExpr(const CallExpressionAST *ast) const override;
-        Value *visitFunctionDef(const FunctionAST *ast) const override;
+        void generateCode(const std::vector<std::unique_ptr<ExpressionAST>>& ast);
 };
 
 #endif

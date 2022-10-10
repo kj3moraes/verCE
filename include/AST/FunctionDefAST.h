@@ -9,15 +9,18 @@
 class Visitor;
 
 class FunctionAST {
-    std::unique_ptr<PrototypeAST> Proto;    
-    std::unique_ptr<ExpressionAST> Body;
+    std::unique_ptr<PrototypeAST> prototype;    
+    std::unique_ptr<ExpressionAST> body;
 
     public:
         FunctionAST(std::unique_ptr<PrototypeAST> Proto,
                     std::unique_ptr<ExpressionAST> Body)
-            : Proto(std::move(Proto)), Body(std::move(Body)) {}
+            : prototype(std::move(Proto)), body(std::move(Body)) {}
         
-        Value *accept(const Visitor *gen);
+        PrototypeAST *getPrototype() const { return prototype.get(); }
+        ExpressionAST *getBody() const { return body.get(); }
+
+        Function *accept(Visitor *gen);
 };
 
 #endif // __FUNCTION_DEF_AST_H__

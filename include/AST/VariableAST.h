@@ -11,6 +11,8 @@ class VariableExpressionAST : public ExpressionAST {
     public:
         VariableExpressionAST(const std::string &Name) : Name(Name) {}
 
+        const std::string getName() const { return Name; }
+
         Value *accept(const Visitor *gen) override;
 };
 

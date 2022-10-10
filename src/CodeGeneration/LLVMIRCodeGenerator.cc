@@ -9,7 +9,15 @@ LLVMIRCodeGenerator::LLVMIRCodeGenerator() {
   Builder = std::make_unique<IRBuilder<>>(*TheContext);
 }
     
-LLVMIRCodeGenerator::~LLVMIRCodeGenerator() {
+LLVMIRCodeGenerator::~LLVMIRCodeGenerator() {}
+
+
+Value *LLVMIRCodeGenerator::visitVariable(const VariableExpressionAST *ast) const {
+  // Look this variable up in the function.
+  Value *V = NamedValues[ast->getName()];
+  if (!V)
+    throw CodeGenerationFailure("Unknown variable name");
+  return V;
 }
 
 
@@ -25,12 +33,92 @@ Value *LLVMIRCodeGenerator::visitBinaryOp(const BinaryExpressionAST *ast) const 
             return Builder->CreateMul(lhs, rhs, "multmp");
         case Kind::SLASH:
             return Builder->CreateSDiv(lhs, rhs, "divtmp");
+        case Kind::LT:
+            lhs = Builder->CreateFCmpULT(lhs, rhs, "cmptmp");
+            // Convert bool 0/1 to double 0.0 or 1.0
+            return Builder->CreateUIToFP(lhs, Type::getDoubleTy(*TheContext), "booltmp");
         default:
             return nullptr;
     }
 }
 
+
 Value *LLVMIRCodeGenerator::visitNumber(const NumberExpressionAST *ast) const {
     return ConstantFP::get(*TheContext, APFloat(ast->getValue()));
 }
 
+
+Value *LLVMIRCodeGenerator::visitCallExpr(const CallExpressionAST *ast) const {
+    // Look up the name in the global module table.
+    Function *calleeF = TheModule->getFunction(ast->getCallee()); 
+
+    if (!calleeF)
+        throw CodeGenerationFailure("Unknown function referenced");
+
+    if (calleeF->arg_size() != ast->getNumberOfArgs())
+        throw CodeGenerationFailure("Incorrect # arguments passed");
+
+    std::vector<Value *> argsV;
+    for (unsigned long i = 0L, e = ast->getNumberOfArgs(); i != e; i++) {
+        argsV.push_back(ast->getArgs()[i]->accept(this));
+        if (!argsV.back())
+            return nullptr;
+    }
+
+    return Builder->CreateCall(calleeF, argsV, "calltmp");
+}
+
+
+Function *LLVMIRCodeGenerator::visitPrototype(const PrototypeAST *ast) const {
+
+    // Make the function type:  double(double,double) etc.
+    std::vector<Type *> Doubles(ast->getNumberOfArgs(), Type::getDoubleTy(*TheContext));
+    
+    FunctionType *functionTypes = FunctionType::get(Type::getDoubleTy(*TheContext), Doubles, false);
+    Function *function = Function::Create(functionTypes, Function::ExternalLinkage, ast->getName(), TheModule.get());
+    
+    // Set names for all arguments.
+    unsigned int i = 0;
+    for (auto &arg : function->args())
+        arg.setName(ast->getArgs()[i++]);
+
+    return function;
+}
+
+
+Function *LLVMIRCodeGenerator::visitFunctionDef(const FunctionAST *ast) {
+
+    // 1. Check if the function is already defined via `extern`.
+    Function *function = TheModule->getFunction(ast->getPrototype()->getName());
+
+    if (!function)
+        function = visitPrototype(ast->getPrototype());
+
+    if (!function)
+        return nullptr;
+
+    if (!function->empty())
+        throw CodeGenerationFailure("Function cannot be redefined.");
+
+    // Create a new basic block to start insertion into.
+    BasicBlock *BB = BasicBlock::Create(*TheContext, "entry", function);
+    Builder->SetInsertPoint(BB);
+
+    // Record the function arguments in the NamedValues map.
+    NamedValues.clear();
+    for (auto &arg : function->args())
+        NamedValues[std::string(arg.getName())] = &arg;
+
+    if (Value *returnValue = ast->getBody()->accept(this)) {
+        // Finish off the function.
+        Builder->CreateRet(returnValue);
+
+        // Validate the generated code, checking for consistency.
+        verifyFunction(*function);
+
+        return function;
+    }
+
+    function->eraseFromParent();
+    return nullptr;    
+}

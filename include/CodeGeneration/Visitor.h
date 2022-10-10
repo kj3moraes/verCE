@@ -21,9 +21,9 @@ class Visitor {
         virtual Value *visitBinaryOp(const BinaryExpressionAST *ast) const = 0;
         virtual Value *visitNumber(const NumberExpressionAST *ast) const = 0;
         virtual Value *visitVariable(const VariableExpressionAST *ast) const = 0;
-        virtual Value *visitPrototype(const PrototypeAST *ast) const = 0;
         virtual Value *visitCallExpr(const CallExpressionAST *ast) const = 0;
-        virtual Value *visitFunctionDef(const FunctionAST *ast) const = 0;
+        virtual Function *visitPrototype(const PrototypeAST *ast) const = 0;
+        virtual Function *visitFunctionDef(const FunctionAST *ast) = 0;
 };
 
 #endif // __VISITOR_H__
