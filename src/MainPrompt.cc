@@ -1,4 +1,4 @@
-#include "CodeGeneration/LLVMIRCodeGenerator.h"
+#include "CodeGeneration/LLVMIRGenerator.h"
 #include "Parser.h"
 #include "Token.h"
 #include "Lexer.h"
@@ -42,6 +42,6 @@ int main() {
             cout << c.what() << endl;
         }
 
-        LLVMIRCodeGenerator cg{};
+        LLVMIRGenerator cg{};
     }
 }

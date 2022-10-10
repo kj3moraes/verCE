@@ -13,4 +13,4 @@
 #include "llvm/IR/Type.h"
 #include "llvm/IR/Verifier.h"
 
-#endif
+#endif // __CODE_GENERATION_H__

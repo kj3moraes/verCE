@@ -1,6 +1,6 @@
-#include "CodeGeneration/LLVMIRCodeGenerator.h"
+#include "CodeGeneration/LLVMIRGenerator.h"
 
-LLVMIRCodeGenerator::LLVMIRCodeGenerator() {
+LLVMIRGenerator::LLVMIRGenerator() {
 // Open a new context and module.
   TheContext = std::make_unique<LLVMContext>();
   TheModule = std::make_unique<Module>("my cool jit", *TheContext);
@@ -9,10 +9,10 @@ LLVMIRCodeGenerator::LLVMIRCodeGenerator() {
   Builder = std::make_unique<IRBuilder<>>(*TheContext);
 }
     
-LLVMIRCodeGenerator::~LLVMIRCodeGenerator() {}
+LLVMIRGenerator::~LLVMIRGenerator() {}
 
 
-Value *LLVMIRCodeGenerator::visitVariable(const VariableExpressionAST *ast) const {
+Value *LLVMIRGenerator::visitVariable(const VariableExpressionAST *ast) const {
   // Look this variable up in the function.
   Value *V = NamedValues[ast->getName()];
   if (!V)
@@ -21,7 +21,7 @@ Value *LLVMIRCodeGenerator::visitVariable(const VariableExpressionAST *ast) cons
 }
 
 
-Value *LLVMIRCodeGenerator::visitBinaryOp(const BinaryExpressionAST *ast) const {
+Value *LLVMIRGenerator::visitBinaryOp(const BinaryExpressionAST *ast) const {
     Value *lhs = ast->getLHS()->accept(this);
     Value *rhs = ast->getRHS()->accept(this);
     switch (ast->getOperator().getKind()) {
@@ -43,12 +43,12 @@ Value *LLVMIRCodeGenerator::visitBinaryOp(const BinaryExpressionAST *ast) const 
 }
 
 
-Value *LLVMIRCodeGenerator::visitNumber(const NumberExpressionAST *ast) const {
+Value *LLVMIRGenerator::visitNumber(const NumberExpressionAST *ast) const {
     return ConstantFP::get(*TheContext, APFloat(ast->getValue()));
 }
 
 
-Value *LLVMIRCodeGenerator::visitCallExpr(const CallExpressionAST *ast) const {
+Value *LLVMIRGenerator::visitCallExpr(const CallExpressionAST *ast) const {
     // Look up the name in the global module table.
     Function *calleeF = TheModule->getFunction(ast->getCallee()); 
 
@@ -69,7 +69,7 @@ Value *LLVMIRCodeGenerator::visitCallExpr(const CallExpressionAST *ast) const {
 }
 
 
-Function *LLVMIRCodeGenerator::visitPrototype(const PrototypeAST *ast) const {
+Function *LLVMIRGenerator::visitPrototype(const PrototypeAST *ast) const {
 
     // Make the function type:  double(double,double) etc.
     std::vector<Type *> Doubles(ast->getNumberOfArgs(), Type::getDoubleTy(*TheContext));
@@ -86,7 +86,7 @@ Function *LLVMIRCodeGenerator::visitPrototype(const PrototypeAST *ast) const {
 }
 
 
-Function *LLVMIRCodeGenerator::visitFunctionDef(const FunctionAST *ast) {
+Function *LLVMIRGenerator::visitFunctionDef(const FunctionAST *ast) {
 
     // 1. Check if the function is already defined via `extern`.
     Function *function = TheModule->getFunction(ast->getPrototype()->getName());

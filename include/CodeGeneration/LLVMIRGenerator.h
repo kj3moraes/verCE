@@ -16,7 +16,7 @@
 
 using namespace llvm;
 
-class LLVMIRCodeGenerator : public Visitor {
+class LLVMIRGenerator : public Visitor {
     private:
         std::unique_ptr<LLVMContext> TheContext;
         std::unique_ptr<IRBuilder<>> Builder;
@@ -31,8 +31,8 @@ class LLVMIRCodeGenerator : public Visitor {
         Function *visitFunctionDef(const FunctionAST *ast) override;
     
     public:
-        LLVMIRCodeGenerator();
-        ~LLVMIRCodeGenerator();
+        LLVMIRGenerator();
+        ~LLVMIRGenerator();
 
         void generateCode(const std::vector<std::unique_ptr<ExpressionAST>>& ast);
 };
