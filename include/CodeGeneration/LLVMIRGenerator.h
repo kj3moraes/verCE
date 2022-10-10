@@ -2,9 +2,6 @@
 #define __LLVM_IR_CODE_GENERATOR_H__
 
 #include <algorithm>
-#include <cctype>
-#include <cstdio>
-#include <cstdlib>
 #include <map>
 #include <memory>
 #include <string>
