@@ -85,6 +85,10 @@ Kind Lexer::stateToKind(State s) const {
     }
 }
 
+void Lexer::logLexerError(const std::string errorMsg) const {
+    std::cerr << "Lexer Error: " << errorMsg << std::endl;
+}
+
 void Lexer::registerTransition(State oldState, const std::string &chars, State newState) {
     for (char c : chars) {
         transitionFunction[oldState][c] = newState;
@@ -139,7 +143,8 @@ std::vector<Token> Lexer::simplifiedMaximalMunch(const std::string &input) const
         // Special case for variable names that start with a number
         if (oldState == ST_NUM && state == ST_ERR && isalpha(*inputPosn)) {
             munchedInput += *inputPosn;
-            return {Token(ID, "ERROR:Failure on input>" + munchedInput +"\nYou cannot have variable names starting with a number!")};
+            logLexerError("Variable names cannot start with a number");
+            return {Token(ID, "ERROR:Failure on input>" + munchedInput +"\n")};
         }
 
         if (inputPosn == input.end() || isFailed(state)) {
@@ -151,6 +156,7 @@ std::vector<Token> Lexer::simplifiedMaximalMunch(const std::string &input) const
                 if (isFailed(state)) {
                     munchedInput += *inputPosn;
                 }
+                logLexerError("You have an invalid character.");
                 return {Token(ID, "ERROR:Failure on input>" + munchedInput +"\nYou have an invalid character!")};
             }
         }
@@ -159,14 +165,12 @@ std::vector<Token> Lexer::simplifiedMaximalMunch(const std::string &input) const
 }
 
 
-std::vector<Token> Lexer::scan(std::string &input, const unsigned long lineNumber) {
+std::vector<Token> Lexer::scan(std::string &input) const {
     
     std::vector<Token> tokens;
     tokens  = simplifiedMaximalMunch(input);
     if (tokens.size() >= 1 && tokens[0].getKind() == Kind::ID && tokens[0].getLexeme().find("ERROR") != std::string::npos) {
-        tokens.clear();
-        tokens.emplace_back(ID, "ERROR:Failure on input>" + input +"\nYou have an invalid character!");
-        return tokens;
+        return {};
     }
     std::vector<Token> finaltokens;
 

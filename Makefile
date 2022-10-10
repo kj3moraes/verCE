@@ -80,7 +80,7 @@ OBJECTS_PRG     := $(patsubst $(SRC_DIR)/%,$(OBJ_DIR)/%,$(SOURCES_PRG:.$(SRC_EXT
 
 # Link
 $(TARGET_PRG): $(OBJECTS_PRG)
-	$(CXX) -o $(TARGET_DIR)/$(TARGET_PRG) $^ $(LIB_FLAGS)
+	$(CXX) -o $(TARGET_DIR)/$(TARGET_PRG) $^ $(LIB_FLAGS) $(LLVM_LIB_SPEC) 
 
 # =======================================================================================
 
@@ -91,7 +91,7 @@ $(LIBRARY): $(OBJECTS_PRM) $(OBJECTS_PRG)
 # Compile
 $(OBJ_DIR)/%.$(OBJ_EXT): $(SRC_DIR)/%.$(SRC_EXT)
 	@mkdir -p $(dir $@)
-	$(CXX) $(CXX_FLAGS) $(LLVM_LIB_SPEC) $(INC_FLAGS) -c -o $@ $<
+	$(CXX) $(CXX_FLAGS) $(INC_FLAGS) -c -o $@ $<
 	@$(CXX) $(CXX_FLAGS) $(INC_DEP) -MM $(SRC_DIR)/$*.$(SRC_EXT) > $(OBJ_DIR)/$*.$(DEP_EXT)
 	@cp -f $(OBJ_DIR)/$*.$(DEP_EXT) $(OBJ_DIR)/$*.$(DEP_EXT).tmp
 	@sed -e 's|.*:|$(OBJ_DIR)/$*.$(OBJ_EXT):|' < $(OBJ_DIR)/$*.$(DEP_EXT).tmp > $(OBJ_DIR)/$*.$(DEP_EXT)

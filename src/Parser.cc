@@ -16,11 +16,15 @@ void Parser::advance() {
     currentToken = tokens[currentTokenIndex];
 }
 
-const int Parser::getTokenPrecedence() {
+int Parser::getTokenPrecedence() {
     if (binaryOperatorPrecedence.find(currentToken.getKind()) != binaryOperatorPrecedence.end()) {
         return binaryOperatorPrecedence[currentToken.getKind()];
     }
     return -1;
+}
+
+void Parser::logParsingError(const std::string errorMsg) const {
+    std::cerr << "ERROR (Parsing): " << errorMsg << std::endl;
 }
 
 std::unique_ptr<ExpressionAST> Parser::parseExpression() {
@@ -39,7 +43,7 @@ std::unique_ptr<ExpressionAST> Parser::parseParenthesisExpression() {
         return nullptr;
     
     if (currentToken.getKind() != RPAREN) {
-        // throw CompilationFailure("expected a ')'");
+        logParsingError("Expected ')'");
         return nullptr;
     }
     advance();
@@ -64,14 +68,14 @@ std::unique_ptr<ExpressionAST> Parser::parseIdentifierExpression() {
         while (currentToken.getKind() != RPAREN) {
             auto arg = parseExpression();
             if (!arg) {
-                // throw CompilationFailure("expected an expression");
+                logParsingError("expected an expression");
                 return nullptr;
             }
 
             args.push_back(std::move(arg));
             
             if (currentToken.getKind() != COMMA) {
-                // throw CompilationFailure("expected ',' or ')' after argument");
+                logParsingError("expected ',' or ')' after argument");
                 return nullptr;
             }
             advance();
@@ -92,7 +96,7 @@ std::unique_ptr<ExpressionAST> Parser::parsePrimary() {
         case Kind::LPAREN:
             return parseParenthesisExpression();
         default:
-            // throw CompilationFailure("Unknown token when expecting an expression");
+            logParsingError("Unknown token when expecting an expression");
             return nullptr;
     }
 }
@@ -169,7 +173,7 @@ std::unique_ptr<PrototypeAST> Parser::parseExtern() {
 
 std::unique_ptr<PrototypeAST> Parser::parsePrototypeExpression() {
     if (currentToken.getKind() != Kind::ID) {
-        // throw CompilationFailure("Expected function name in prototype");
+        logParsingError("Expected function name in prototype");
         return nullptr;
     }
 
@@ -177,7 +181,7 @@ std::unique_ptr<PrototypeAST> Parser::parsePrototypeExpression() {
     advance();
 
     if (currentToken.getKind() != Kind::LPAREN) {
-        // throw CompilationFailure("Expected a '(' in the prototype");
+        logParsingError("Expected a '(' in the prototype");
         return nullptr;
     }
 
@@ -189,7 +193,7 @@ std::unique_ptr<PrototypeAST> Parser::parsePrototypeExpression() {
     }
 
     if (currentToken.getKind() != Kind::RPAREN) {
-        // throw CompilationFailure("Expected a ')' in the prototype");
+        logParsingError("Expected a ')' in the prototype");
         return nullptr;
     }
 
@@ -198,7 +202,7 @@ std::unique_ptr<PrototypeAST> Parser::parsePrototypeExpression() {
     return std::make_unique<PrototypeAST>(functionName, std::move(argumentNames));
 }
 
-std::unique_ptr<ExpressionAST> Parser::parseInput() {
+std::unique_ptr<NodeAST> Parser::parseInput() {
 
     while (currentToken.getKind() != Kind::END_OF_FILE) {
         switch (currentToken.getKind()) {

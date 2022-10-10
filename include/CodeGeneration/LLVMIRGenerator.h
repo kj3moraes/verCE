@@ -20,6 +20,8 @@ class LLVMIRGenerator : public Visitor {
         std::unique_ptr<Module> TheModule;
         std::map<std::string, Value *> NamedValues;
 
+        void *logIRGenerationError(std::string errorMsg) const;
+
         Value *visitBinaryOp(const BinaryExpressionAST *ast) const override;
         Value *visitNumber(const NumberExpressionAST *ast) const override;
         Value *visitVariable(const VariableExpressionAST *ast) const override;

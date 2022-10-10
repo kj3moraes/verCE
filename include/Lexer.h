@@ -57,6 +57,8 @@ class Lexer {
     Kind stateToKind(State s) const;
 
     std::vector<Token> simplifiedMaximalMunch(const std::string &input) const;
+    
+    void logLexerError(const std::string errorMsg) const;
 
     void registerTransition(State oldState, const std::string &chars, State newState);
 
@@ -80,20 +82,6 @@ class Lexer {
          * @param input 
          * @return std::vector<Token> 
          */
-        std::vector<Token> scan(std::string &input, const unsigned long lineNumber);
+        std::vector<Token> scan(std::string &input) const;
 };
 #endif // __LEXER_H__
-
-#ifndef __SCAN_FAILURE_H__
-#define __SCAN_FAILURE_H__
-class ScanningFailure {
-
-    std::string message;
-
-    public:
-        ScanningFailure(std::string message) : message("ERROR (scanning): " + message) {}
-
-        std::string what() const { return message; };
-};
-
-#endif // __SCAN_FAILURE_H__

@@ -10,6 +10,10 @@
 
 using namespace std;
 
+#define RED_BG "\033[1;41m"
+#define WHITE_FG "\033[1;37m"
+#define RESET "\033[0m"
+
 int main() {
     string line; 
     Lexer ls; 
@@ -24,12 +28,11 @@ int main() {
         if (cin.eof()) {
             break;
         }
-        try {
-            lineToks = ls.scan(line, lineNumber++);
-        } catch(ScanningFailure &s) {
-            cerr << "Scanning Failed!" << endl;
-            cerr << s.what() << endl;
-            break;
+        
+        lineToks = ls.scan(line);
+        if (lineToks.size() == 0) {
+            cerr << RED_BG << WHITE_FG << "Error on line " << lineNumber << RESET << endl;
+            continue;
         }
         tokens.insert(tokens.end(), lineToks.begin(), lineToks.end());
     }
@@ -50,5 +53,5 @@ int main() {
         cerr << c.what() << endl;
     }
 
-    LLVMIRCodeGenerator cg{};
+    LLVMIRGenerator cg{};
 }

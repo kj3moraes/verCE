@@ -22,26 +22,15 @@ int main() {
         if (cin.eof()) {
             break;
         }
-        try {
-            tokens = ls.scan(line, 0);
-            for (auto &v : tokens) {
-                cout << v << endl;
-            }
-        } catch(ScanningFailure &s) {
-            cout << s.what() << endl;
-            break;
-        }
+        
+        tokens = ls.scan(line);
+
         tokens.emplace_back(END_OF_FILE, "eof");
 
         Parser ps{tokens};
-        try {
-            auto ast = ps.parseInput();
-            cout << "Parsed successfully!" << endl;
-        } catch(CompilationFailure &c) {
-            cout << "\nCompilation failed!" << endl;
-            cout << c.what() << endl;
-        }
-
+        
+        auto ast = ps.parseInput();
+        
         LLVMIRGenerator cg{};
     }
 }

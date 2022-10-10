@@ -1,6 +1,7 @@
 #ifndef __AST_H__
 #define __AST_H__
 
+#include "AST/NodeAST.h"
 #include "AST/ExpressionAST.h"
 #include "AST/BinaryOperationAST.h"
 #include "AST/NumberAST.h"

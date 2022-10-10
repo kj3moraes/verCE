@@ -3,11 +3,13 @@
 
 #include <string>
 
+#include "NodeAST.h"
+
 class Visitor;
 #include "../CodeGeneration.h"
 using namespace llvm;
 
-class ExpressionAST {
+class ExpressionAST : public NodeAST {
     std::string value;
 
     public:

@@ -33,7 +33,9 @@ class Parser {
      * values are defined in the binaryOperatorPrecedence map.
      * @return int - the token precedence
      */
-    const int getTokenPrecedence();
+    int getTokenPrecedence();
+
+    void logParsingError(const std::string errorMsg) const;
 
     std::unique_ptr<ExpressionAST> parseExpression();
 
@@ -72,22 +74,7 @@ class Parser {
          * Token vector list and returns the root of the tree.
          * @return std::unique_ptr<ExpressionAST> is the root of the AST built from the token list.
          */
-        std::unique_ptr<ExpressionAST> parseInput();      
+        std::unique_ptr<NodeAST> parseInput();      
 };
 
 #endif // __PARSER_H__
-
-
-#ifndef __COMPILATION_FAILURE_H__
-#define __COMPILATION_FAILURE_H__
-
-class CompilationFailure {
-    std::string message;
-
-    public:
-        CompilationFailure(const std::string& message) : message("ERROR (parsing): " + message) {}
-
-        std::string what() const { return message; }
-};
-
-#endif // __COMPILATION_FAILURE_H__

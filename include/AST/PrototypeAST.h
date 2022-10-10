@@ -4,10 +4,11 @@
 #include <string>
 #include <vector>
 
+#include "NodeAST.h"
 #include "../CodeGeneration.h"
 using namespace llvm;
 
-class PrototypeAST {
+class PrototypeAST : public NodeAST{
     std::string Name;
     std::vector<std::string> Args;
 
@@ -15,9 +16,9 @@ class PrototypeAST {
         PrototypeAST(const std::string &Name, std::vector<std::string> Args)
             : Name(Name), Args(std::move(Args)) {}
 
-        const std::string &getName() const { return Name; }
-        const std::vector<std::string> &getArgs() const { return Args; }
-        const unsigned long getNumberOfArgs() const { return Args.size(); }
+        inline std::string getName() const { return Name; }
+        inline const std::vector<std::string> &getArgs() const { return Args; }
+        inline unsigned long getNumberOfArgs() const { return Args.size(); }
         
         Function *accept(const Visitor *gen);
 };

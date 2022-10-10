@@ -3,12 +3,13 @@
 
 #include <memory>
 
+#include "NodeAST.h"
 #include "ExpressionAST.h"
 #include "PrototypeAST.h"
 #include "../CodeGeneration.h" 
 class Visitor;
 
-class FunctionAST {
+class FunctionAST : public NodeAST {
     std::unique_ptr<PrototypeAST> prototype;    
     std::unique_ptr<ExpressionAST> body;
 

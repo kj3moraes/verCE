@@ -1,5 +1,10 @@
 #include "CodeGeneration/LLVMIRGenerator.h"
 
+void *LLVMIRGenerator::logIRGenerationError(std::string errorMsg) const {
+    std::cerr << "ERROR: " << errorMsg << std::endl;
+    return nullptr;
+}
+
 LLVMIRGenerator::LLVMIRGenerator() {
 // Open a new context and module.
   TheContext = std::make_unique<LLVMContext>();
@@ -7,16 +12,16 @@ LLVMIRGenerator::LLVMIRGenerator() {
 
   // Create a new builder for the module.
   Builder = std::make_unique<IRBuilder<>>(*TheContext);
+  NamedValues = std::map<std::string, Value *>();
 }
     
 LLVMIRGenerator::~LLVMIRGenerator() {}
 
-
 Value *LLVMIRGenerator::visitVariable(const VariableExpressionAST *ast) const {
   // Look this variable up in the function.
-  Value *V = NamedValues[ast->getName()];
+  Value *V = NamedValues.at(ast->getName());
   if (!V)
-    throw CodeGenerationFailure("Unknown variable name");
+    return (Value *)logIRGenerationError("Unknown variable name");
   return V;
 }
 
@@ -53,10 +58,10 @@ Value *LLVMIRGenerator::visitCallExpr(const CallExpressionAST *ast) const {
     Function *calleeF = TheModule->getFunction(ast->getCallee()); 
 
     if (!calleeF)
-        throw CodeGenerationFailure("Unknown function referenced");
+        return (Value *)logIRGenerationError("Unknown function referenced");
 
     if (calleeF->arg_size() != ast->getNumberOfArgs())
-        throw CodeGenerationFailure("Incorrect # arguments passed");
+        return (Value *)logIRGenerationError("Incorrect # arguments passed");
 
     std::vector<Value *> argsV;
     for (unsigned long i = 0L, e = ast->getNumberOfArgs(); i != e; i++) {
@@ -97,8 +102,10 @@ Function *LLVMIRGenerator::visitFunctionDef(const FunctionAST *ast) {
     if (!function)
         return nullptr;
 
-    if (!function->empty())
-        throw CodeGenerationFailure("Function cannot be redefined.");
+    if (!function->empty()) {
+        return (Function *)logIRGenerationError("Function cannot be redefined.");
+    }
+        
 
     // Create a new basic block to start insertion into.
     BasicBlock *BB = BasicBlock::Create(*TheContext, "entry", function);
