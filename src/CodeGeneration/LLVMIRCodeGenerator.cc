@@ -15,7 +15,9 @@ LLVMIRGenerator::LLVMIRGenerator() {
   NamedValues = std::map<std::string, Value *>();
 }
     
+
 LLVMIRGenerator::~LLVMIRGenerator() {}
+
 
 Value *LLVMIRGenerator::visitVariable(const VariableExpressionAST *ast) const {
   // Look this variable up in the function.
@@ -128,4 +130,21 @@ Function *LLVMIRGenerator::visitFunctionDef(const FunctionAST *ast) {
 
     function->eraseFromParent();
     return nullptr;    
+}
+
+
+void LLVMIRGenerator::generateIR(const std::unique_ptr<NodeAST> &root) {
+    
+    if (FunctionAST *functionAST = dynamic_cast<FunctionAST *>(root.get())) {
+        visitFunctionDef(functionAST);
+    } else if (PrototypeAST *prototypeAST = dynamic_cast<PrototypeAST *>(root.get())) {
+        visitPrototype(prototypeAST);
+    } else {
+        logIRGenerationError("Unknown AST node type");
+    }
+}
+
+
+void LLVMIRGenerator::printIR() const {
+    TheModule->print(errs(), nullptr);
 }

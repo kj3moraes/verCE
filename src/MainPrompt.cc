@@ -24,7 +24,7 @@ int main() {
         }
         
         tokens = ls.scan(line);
-
+        
         tokens.emplace_back(END_OF_FILE, "eof");
 
         Parser ps{tokens};
@@ -32,5 +32,8 @@ int main() {
         auto ast = ps.parseInput();
         
         LLVMIRGenerator cg{};
+        cg.generateIR(ast);
+
+        cg.printIR();
     }
 }

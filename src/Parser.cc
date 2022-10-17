@@ -224,6 +224,12 @@ std::unique_ptr<NodeAST> Parser::parseInput() {
                 break;
             }
 
+            case Kind::SEMI:
+            {
+                advance();
+                break;
+            }
+
             default:
                 std::cout << "Handling top level expression" << std::endl;
                 result = parseTopLevelExpression();
