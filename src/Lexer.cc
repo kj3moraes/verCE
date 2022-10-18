@@ -127,7 +127,7 @@ std::vector<Token> Lexer::simplifiedMaximalMunch(const std::string &input) const
     std::vector<Token> result;
 
     State state = start();
-    std::string munchedInput;
+    std::string munchedInput = "";
 
     for (std::string::const_iterator inputPosn = input.begin(); inputPosn != input.end();) {
 

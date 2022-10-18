@@ -73,6 +73,9 @@ std::unique_ptr<ExpressionAST> Parser::parseIdentifierExpression() {
             }
 
             args.push_back(std::move(arg));
+
+            if (currentToken.getKind() == RPAREN)
+                break;
             
             if (currentToken.getKind() != COMMA) {
                 logParsingError("expected ',' or ')' after argument");

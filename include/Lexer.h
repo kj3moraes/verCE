@@ -5,7 +5,7 @@
 #include <iomanip>
 #include <iostream>
 #include <set>
-#include <string>
+#include <debug/string>
 
 #include "Token.h"
 

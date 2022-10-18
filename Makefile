@@ -23,7 +23,7 @@ DEP_EXT 		:= d
 OBJ_EXT			:= o
 
 # Flags and Libraries
-CXX_FLAGS 		:= -std=c++14 -Wall -Wextra -Wpedantic -g -O0
+CXX_FLAGS 		:= -std=c++14 -Wall -Wextra -Wpedantic -g -O0 -fstandalone-debug
 LIB_FLAGS 		:= -lm -lLLVM-13
 LLVM_LIB_SPEC	:= `llvm-config --cxxflags --ldflags --system-libs --libs core`
 INC_FLAGS 		:= -I$(INCLUDE_DIR) -I/usr/local/include -I.
