@@ -16,6 +16,7 @@ int main() {
     Lexer ls;
 
     vector<Token> tokens;
+    LLVMIRGenerator cg{};
     while (true) {
         cout << ">> ";
         getline(cin, line);
@@ -24,16 +25,16 @@ int main() {
         }
         
         tokens = ls.scan(line);
-        
-        tokens.emplace_back(END_OF_FILE, "eof");
+        tokens.emplace_back(END_OF_FILE, "");
 
         Parser ps{tokens};
         
         auto ast = ps.parseInput();
         
-        LLVMIRGenerator cg{};
         cg.generateIR(ast);
 
         cg.printIR();
     }
+
+    cg.printIR();
 }
