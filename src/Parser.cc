@@ -9,6 +9,8 @@ std::map<Kind, int> Parser::binaryOperatorPrecedence = {
     {SLASH, 40},
 };
 
+static unsigned long anon_expression_counter = 0;
+
 Parser::~Parser() {}
 
 void Parser::advance() {
@@ -161,7 +163,8 @@ std::unique_ptr<FunctionAST> Parser::parseDefintion() {
 std::unique_ptr<FunctionAST> Parser::parseTopLevelExpression() {
     if (auto E = parseExpression()) {
         // Make an anonymous prototype.
-        auto prototype = std::make_unique<PrototypeAST>("__anon_expr", std::vector<std::string>());
+        auto prototype = std::make_unique<PrototypeAST>("__anon_expr" + std::to_string(anon_expression_counter), std::vector<std::string>());
+        anon_expression_counter++;
         return std::make_unique<FunctionAST>(std::move(prototype), std::move(E));
     }
     return nullptr;

@@ -41,13 +41,12 @@ class LLVMIRGenerator : public Visitor {
          */
         Value *visitNumber(const NumberExpressionAST *ast) const override;
 
-        /**
-         * 
-        */
         Value *visitVariable(const VariableExpressionAST *ast) const override;
         Value *visitCallExpr(const CallExpressionAST *ast) const override;
         Function *visitPrototype(const PrototypeAST *ast) const override;
         Function *visitFunctionDef(const FunctionAST *ast) override;
+
+        void initialModuleAndPassManager(void);
     
     public:
         LLVMIRGenerator();

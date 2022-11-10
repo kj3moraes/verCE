@@ -41,8 +41,8 @@ int main(int argc, char **argv) {
 
         if (!IS_FILE) {
             cout << ">> ";
-            getline(file, line);
-            if (file.eof()) {
+            getline(cin, line);
+            if (cin.eof()) {
                 break;
             }
         } else {
