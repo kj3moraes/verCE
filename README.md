@@ -7,7 +7,7 @@ A language frontend with LLVM pronounced like the word '_verse_'. This language 
 * Binary operations
 * Function calls and definitions
 * `extern` keyword
-* Interpreted mode
+* JIT compilation
 
 More features will be added soon. Refer to `docs/LANGUAGE_DOC.md` for information on how to use the language, what is supported and how to get started.
 
@@ -31,19 +31,20 @@ The following documents the code structure of the project - what each directory 
 
 ```text
 verCe
-├── bin
+├── bin/
 │   └── verce           : executable file
-├── build               : object/build files
-├── docs                : documentation
-├── include             : header files
-│   └── AST             : AST header files
-│   └── CodeGeneration  : IR generation header files
-├── lib                 : libraries
-├── src                 : source files
-│   └── CodeGeneration  : IR generation source files
-├── tests               : test files with GTEST framework
-│   └── unit_tests      : unit tests
-│   └── full_tests      : complete program tests
+|   └── libverCE.a      : static library for verCE 
+├── build/              : object/build files
+├── docs/               : documentation
+├── include/            : header files
+│   └── AST/            : AST header files
+│   └── CodeGeneration/ : IR generation header files
+├── lib/                : libraries
+├── src/                : source files
+│   └── CodeGeneration/ : IR generation source files
+├── tests/              : test files with GTEST framework
+│   └── unit_tests/     : unit tests
+│   └── full_tests/     : complete program tests
 ├── Makefile            : makefile
 ├── README.md           : this file
 

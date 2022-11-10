@@ -2,20 +2,14 @@
 CXX				:= clang++
 
 # Target executable(s)
-TARGET_PRM		:= verCEPrompt
-TARGET_PRG		:= verCEProgram
+TARGET			:= verCE
 LIBRARY			:= libverCE.a
-
-# Main for the two variants
-MAIN_PRM 		:= MainPrompt.cc
-MAIN_PRG 		:= MainProgram.cc
 
 # Directories
 SRC_DIR			:= src
 OBJ_DIR			:= build
 INCLUDE_DIR		:= include
 TARGET_DIR		:= bin
-RES_DIR			:= resources
 
 # Extensions
 SRC_EXT			:= cc
@@ -36,7 +30,7 @@ INC_DEP			:= -I$(INCLUDE_DIR)
 # =================================== COMMON FUNCS ======================================
 
 # Default Make
-all: directories $(LIBRARY) $(TARGET_PRM) # $(TARGET_PRG)
+all: directories $(LIBRARY) $(TARGET)
 
 # Remake the executable
 remake: purge all
@@ -54,39 +48,18 @@ clean:
 purge: clean
 	@$(RM) -rf $(TARGET_DIR)
 
-
-# =================================== PROMPT =======================================
-
-SOURCES_PRM     := $(shell find $(SRC_DIR) -type f ! -name $(MAIN_PRG) -name *.$(SRC_EXT))
-OBJECTS_PRM     := $(patsubst $(SRC_DIR)/%,$(OBJ_DIR)/%,$(SOURCES_PRM:.$(SRC_EXT)=.$(OBJ_EXT)))
+SOURCES     := $(shell find $(SRC_DIR) -type f -name *.$(SRC_EXT))
+OBJECTS     := $(patsubst $(SRC_DIR)/%,$(OBJ_DIR)/%,$(SOURCES:.$(SRC_EXT)=.$(OBJ_EXT)))
 
 # Pull in dependency info for existing .o files
--include $(OBJECTS_PRM:.$(OBJ_EXT)=.$(DEP_EXT))
+-include $(OBJECTS:.$(OBJ_EXT)=.$(DEP_EXT))
 
 # Link
-$(TARGET_PRM): $(OBJECTS_PRM)
-	$(CXX) -o $(TARGET_DIR)/$(TARGET_PRM) $^ $(LIB_FLAGS)
+$(TARGET): $(OBJECTS)
+	$(CXX) -o $(TARGET_DIR)/$(TARGET) $^ $(LIB_FLAGS)
 
-# =======================================================================================
-
-
-# ================================== PROGRAM =======================================
-
-SOURCES_PRG     := $(shell find $(SRC_DIR) -type f ! -name $(MAIN_PRM) -name *.$(SRC_EXT))
-OBJECTS_PRG     := $(patsubst $(SRC_DIR)/%,$(OBJ_DIR)/%,$(SOURCES_PRG:.$(SRC_EXT)=.$(OBJ_EXT)))
-
-# Pull in dependency info for existing .o files
--include $(OBJECTS_PRG:.$(OBJ_EXT)=.$(DEP_EXT))
-
-# Link
-$(TARGET_PRG): $(OBJECTS_PRG)
-	$(CXX) -o $(TARGET_DIR)/$(TARGET_PRG) $^ $(LIB_FLAGS) $(LLVM_LIB_SPEC) 
-
-# =======================================================================================
-
-$(LIBRARY): $(OBJECTS_PRM) $(OBJECTS_PRG)
+$(LIBRARY): $(OBJECTS) $(OBJECTS_PRG)
 	ar rcs $(TARGET_DIR)/$(LIBRARY) $^
-
 
 # Compile
 $(OBJ_DIR)/%.$(OBJ_EXT): $(SRC_DIR)/%.$(SRC_EXT)
