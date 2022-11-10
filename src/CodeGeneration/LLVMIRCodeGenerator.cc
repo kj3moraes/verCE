@@ -1,7 +1,7 @@
 #include "CodeGeneration/LLVMIRGenerator.h"
 
 void *LLVMIRGenerator::logIRGenerationError(std::string errorMsg) const {
-    std::cerr << "ERROR: " << errorMsg << std::endl;
+    std::cerr << "ERROR: (IR Generation) " << errorMsg << std::endl;
     return nullptr;
 }
 
@@ -133,15 +133,25 @@ Function *LLVMIRGenerator::visitFunctionDef(const FunctionAST *ast) {
 }
 
 
-void LLVMIRGenerator::generateIR(const std::unique_ptr<NodeAST> &root) {
+int LLVMIRGenerator::generateIR(const std::unique_ptr<NodeAST> &root) {
     
     if (FunctionAST *functionAST = dynamic_cast<FunctionAST *>(root.get())) {
-        visitFunctionDef(functionAST);
+        auto code = visitFunctionDef(functionAST);
+        if (code == nullptr) {
+            logIRGenerationError("Code Generation failed for prototype");
+            return 1;
+        }
     } else if (PrototypeAST *prototypeAST = dynamic_cast<PrototypeAST *>(root.get())) {
-        visitPrototype(prototypeAST);
+        auto code = visitPrototype(prototypeAST);
+        if (code == nullptr) {
+            logIRGenerationError("Code Generation failed for prototype");
+            return 1;
+        }
     } else {
         logIRGenerationError("Unknown AST node type");
+        return 1;
     }
+    return 0;
 }
 
 

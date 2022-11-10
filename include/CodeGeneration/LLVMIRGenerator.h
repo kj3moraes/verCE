@@ -40,6 +40,10 @@ class LLVMIRGenerator : public Visitor {
          * @return Value* - 
          */
         Value *visitNumber(const NumberExpressionAST *ast) const override;
+
+        /**
+         * 
+        */
         Value *visitVariable(const VariableExpressionAST *ast) const override;
         Value *visitCallExpr(const CallExpressionAST *ast) const override;
         Function *visitPrototype(const PrototypeAST *ast) const override;
@@ -49,7 +53,7 @@ class LLVMIRGenerator : public Visitor {
         LLVMIRGenerator();
         ~LLVMIRGenerator();
 
-        void generateIR(const std::unique_ptr<NodeAST> &root);
+        int generateIR(const std::unique_ptr<NodeAST> &root);
         
         void printIR() const;
 };

@@ -216,7 +216,10 @@ std::unique_ptr<NodeAST> Parser::parseInput() {
             {
                 std::cout << "Handling definition" << std::endl;
                 result  = parseDefintion();
-                std::cout << currentToken << std::endl;
+                 if (result == nullptr) {
+                    logParsingError("Failed to parse top-level expression here");
+                    return nullptr;
+                }
                 break;
             }
                 
@@ -224,18 +227,25 @@ std::unique_ptr<NodeAST> Parser::parseInput() {
             {
                 std::cout << "Handling extern" << std::endl;
                 result = parseExtern();
+                if (result == nullptr) {
+                    logParsingError("Failed to parse top-level expression here");
+                    return nullptr;
+                }
                 break;
             }
 
             case Kind::SEMI:
-            {
                 advance();
                 break;
-            }
+
 
             default:
                 std::cout << "Handling top level expression" << std::endl;
                 result = parseTopLevelExpression();
+                if (result == nullptr) {
+                    logParsingError("Failed to parse top-level expression here");
+                    return nullptr;
+                }
                 break;
         }
     }
