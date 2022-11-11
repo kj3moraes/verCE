@@ -71,7 +71,7 @@ int main(int argc, char **argv) {
         }
 
         // IR GENERATION STAGE
-        int irReturn = cg.generateIR(ast);
+        int irReturn = cg.generateIR(ast, false);
         if (irReturn != 0) {
             cerr << BG_RED "\nFailed to generate code at line : " << lineNumber << RESET << endl;
             exit(3);

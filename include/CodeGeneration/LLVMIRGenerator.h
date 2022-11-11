@@ -9,6 +9,7 @@
 
 #include "../AST.h"
 #include "../CodeGeneration.h"
+#include "JITCompiler.h"
 #include "Visitor.h"
 
 using namespace llvm;
@@ -19,8 +20,15 @@ class LLVMIRGenerator : public Visitor {
         std::unique_ptr<LLVMContext> TheContext;
         std::unique_ptr<IRBuilder<>> Builder;
         std::unique_ptr<Module> TheModule;
+        std::unique_ptr<legacy::FunctionPassManager> TheFPM;
         std::map<std::string, Value *> NamedValues;
 
+        /**
+         * @brief 
+         * 
+         * @param[in] errorMsg 
+         * @return void* 
+         */
         void *logIRGenerationError(std::string errorMsg) const;
 
         /**
@@ -45,15 +53,29 @@ class LLVMIRGenerator : public Visitor {
         Value *visitCallExpr(const CallExpressionAST *ast) const override;
         Function *visitPrototype(const PrototypeAST *ast) const override;
         Function *visitFunctionDef(const FunctionAST *ast) override;
-
-        void initialModuleAndPassManager(void);
     
     public:
         LLVMIRGenerator();
         ~LLVMIRGenerator();
 
-        int generateIR(const std::unique_ptr<NodeAST> &root);
+        /**
+         * @brief 
+         * 
+         * @param[in] root 
+         * @return int 
+         */
+        int generateIR(const std::unique_ptr<NodeAST> &root, bool isNoOpt);
         
+        /**
+         * @brief Get the Module object
+         * 
+         * @return Module* - Pointer to the Module object. 
+         */
+        Module *getModule() const;
+
+        /**
+         * @brief Prints the IR stored in the Module object
+         */
         void printIR() const;
 };
 

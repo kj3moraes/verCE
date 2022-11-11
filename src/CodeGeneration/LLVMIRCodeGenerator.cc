@@ -1,4 +1,25 @@
+#include <utility>
 #include "CodeGeneration/LLVMIRGenerator.h"
+
+#ifdef _WIN32
+#define DLLEXPORT __declspec(dllexport)
+#else
+#define DLLEXPORT
+#endif
+
+/// putchard - putchar that takes a double and returns 0.
+extern "C" DLLEXPORT double putchard(double X) {
+  fputc((char)X, stderr);
+  return 0;
+}
+
+/// printd - printf that takes a double prints it as "%f\n", returning 0.
+extern "C" DLLEXPORT double printd(double X) {
+  fprintf(stderr, "%f\n", X);
+  return 0;
+}
+
+static unsigned long anon_expression_counter = 0;
 
 void *LLVMIRGenerator::logIRGenerationError(std::string errorMsg) const {
     std::cerr << "ERROR: (IR Generation) " << errorMsg << std::endl;
@@ -6,13 +27,16 @@ void *LLVMIRGenerator::logIRGenerationError(std::string errorMsg) const {
 }
 
 LLVMIRGenerator::LLVMIRGenerator() {
-// Open a new context and module.
-  TheContext = std::make_unique<LLVMContext>();
-  TheModule = std::make_unique<Module>("my cool jit", *TheContext);
+    // Open a new context and module.
+    TheContext = std::make_unique<LLVMContext>();
+    TheModule = std::make_unique<Module>("KEANE'S JIT.C", *TheContext);
 
-  // Create a new builder for the module.
-  Builder = std::make_unique<IRBuilder<>>(*TheContext);
-  NamedValues = std::map<std::string, Value *>();
+    // Create a new builder for the module.
+    Builder = std::make_unique<IRBuilder<>>(*TheContext);
+    NamedValues = std::map<std::string, Value *>();
+
+    // Create a new pass manager attached to it.
+    TheFPM = std::make_unique<legacy::FunctionPassManager>(getModule());
 }
     
 
@@ -20,11 +44,11 @@ LLVMIRGenerator::~LLVMIRGenerator() {}
 
 
 Value *LLVMIRGenerator::visitVariable(const VariableExpressionAST *ast) const {
-  // Look this variable up in the function.
-  Value *V = NamedValues.at(ast->getName());
-  if (!V)
-    return (Value *)logIRGenerationError("Unknown variable name");
-  return V;
+    // Look this variable up in the function.
+    Value *V = NamedValues.at(ast->getName());
+    if (!V)
+        return (Value *)logIRGenerationError("Unknown variable name");
+    return V;
 }
 
 
@@ -107,7 +131,6 @@ Function *LLVMIRGenerator::visitFunctionDef(const FunctionAST *ast) {
     if (!function->empty()) {
         return (Function *)logIRGenerationError("Function cannot be redefined.");
     }
-        
 
     // Create a new basic block to start insertion into.
     BasicBlock *BB = BasicBlock::Create(*TheContext, "entry", function);
@@ -125,6 +148,12 @@ Function *LLVMIRGenerator::visitFunctionDef(const FunctionAST *ast) {
         // Validate the generated code, checking for consistency.
         verifyFunction(*function);
 
+        if (ast->getPrototype()->getName().find("__anon_expr") != std::string::npos) {
+            std::unique_ptr<Module> copied = CloneModule(*TheModule.get());
+            JITCompiler myJIT;
+            myJIT.analyseTopLevelExpression(std::move(copied));
+        }
+
         return function;
     }
 
@@ -133,7 +162,7 @@ Function *LLVMIRGenerator::visitFunctionDef(const FunctionAST *ast) {
 }
 
 
-int LLVMIRGenerator::generateIR(const std::unique_ptr<NodeAST> &root) {
+int LLVMIRGenerator::generateIR(const std::unique_ptr<NodeAST> &root, bool isNoOpt) {
     
     if (FunctionAST *functionAST = dynamic_cast<FunctionAST *>(root.get())) {
         auto code = visitFunctionDef(functionAST);
@@ -151,10 +180,23 @@ int LLVMIRGenerator::generateIR(const std::unique_ptr<NodeAST> &root) {
         logIRGenerationError("Unknown AST node type");
         return 1;
     }
+
+    if (!isNoOpt) {
+        TheFPM->add(createInstructionCombiningPass());
+        TheFPM->add(createReassociatePass());
+        TheFPM->add(createGVNPass());
+        TheFPM->add(createCFGSimplificationPass());
+        TheFPM->doInitialization();
+    }
+
     return 0;
 }
 
 
 void LLVMIRGenerator::printIR() const {
     TheModule->print(errs(), nullptr);
+}
+
+Module *LLVMIRGenerator::getModule() const {
+    return TheModule.get();
 }
