@@ -16,7 +16,7 @@ More features will be added soon. Refer to `docs/LANGUAGE_DOC.md` for informatio
 To build the program, just type `make all` when you are in the root directory. This will create /bin and /build directories. The executable will be in the /bin directory. The requirements are :
 
 * clang>=8.0
-* LLVM>=3.6
+* LLVM>=10.0.0
 * GNU Make
 
 To rebuild completely again, type
