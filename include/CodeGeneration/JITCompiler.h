@@ -13,6 +13,8 @@ class JITCompiler {
 
     public:
         JITCompiler();
+
+        TargetMachine &getTargetMachine() const;
         double analyseTopLevelExpression(std::unique_ptr<Module> module);
 };
 #endif

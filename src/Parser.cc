@@ -141,9 +141,8 @@ std::unique_ptr<ExpressionAST> Parser::parseBinaryOperatorRHS(int precedence, st
 
 std::unique_ptr<NumberExpressionAST> Parser::parseNumberExpression() {
     double number = std::stod(currentToken.getLexeme());
-    auto result = std::make_unique<NumberExpressionAST>(number);
     advance();
-    return result;
+    return std::make_unique<NumberExpressionAST>(number);
 }
 
 

@@ -5,21 +5,26 @@
 static unsigned long anon_expression_counter = 0;
 
 JITCompiler::JITCompiler() {
-    TheJIT = std::make_unique<orc::KaleidoscopeJIT>();
-}
-
-double JITCompiler::analyseTopLevelExpression(std::unique_ptr<llvm::Module> module) {
-    
     InitializeNativeTarget();
     InitializeNativeTargetAsmPrinter();
     InitializeNativeTargetAsmParser();
 
+    TheJIT = std::make_unique<orc::KaleidoscopeJIT>();
+}
+
+TargetMachine &JITCompiler::getTargetMachine() const {
+    return TheJIT->getTargetMachine();
+}
+
+double JITCompiler::analyseTopLevelExpression(std::unique_ptr<Module> module) {
+    
     // JIT the module containing the anonymous expression, keeping a handle so
     // we can free it later.
     auto H = TheJIT->addModule(std::move(module));
 
-    // Search the JIT for the __anon_expr symbol.
-    auto ExprSymbol = TheJIT->findSymbol("__anon_expr" + std::to_string(anon_expression_counter));
+    // Search the JIT for the __anon_expr<num> symbol.
+    auto ExprSymbol = TheJIT->findSymbol("__anon_expr" + 
+                                            std::to_string(anon_expression_counter));
     assert(ExprSymbol && "Function not found");
     anon_expression_counter++;
 

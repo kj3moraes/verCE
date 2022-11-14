@@ -25,7 +25,14 @@ static void *logIRGenerationError(std::string errorMsg) {
 }
 
 LLVMIRGenerator::LLVMIRGenerator() {
+
+    InitializeNativeTarget();
+    InitializeNativeTargetAsmPrinter();
+    InitializeNativeTargetAsmParser();
+
     // Open a new context and module.
+    myJIT = std::make_unique<orc::KaleidoscopeJIT>();
+
     TheContext = std::make_unique<LLVMContext>();
     TheModule = std::make_unique<Module>("KEANE'S JIT.C", *TheContext);
 
@@ -110,7 +117,8 @@ Function *LLVMIRGenerator::visitPrototype(const PrototypeAST *ast) const {
     std::vector<Type *> Doubles(ast->getNumberOfArgs(), Type::getDoubleTy(*TheContext));
     
     FunctionType *functionTypes = FunctionType::get(Type::getDoubleTy(*TheContext), Doubles, false);
-    Function *function = Function::Create(functionTypes, Function::ExternalLinkage, ast->getName(), TheModule.get());
+    Function *function = Function::Create(functionTypes, Function::ExternalLinkage, ast->getName(),
+                                            TheModule.get());
     
     // Set names for all arguments.
     unsigned int i = 0;
@@ -139,7 +147,7 @@ Function *LLVMIRGenerator::visitFunctionDef(const FunctionAST *ast) {
     // Create a new basic block to start insertion into.
     BasicBlock *BB = BasicBlock::Create(*TheContext, "entry", function);
     Builder->SetInsertPoint(BB);
-
+    
     // Record the function arguments in the NamedValues map.
     NamedValues.clear();
     for (auto &arg : function->args())
@@ -151,14 +159,9 @@ Function *LLVMIRGenerator::visitFunctionDef(const FunctionAST *ast) {
 
         // Validate the generated code, checking for consistency.
         verifyFunction(*function);
-
-        if (ast->getPrototype()->getName().find("__anon_expr") != std::string::npos) {
-            std::unique_ptr<Module> copied = CloneModule(*TheModule.get());
-            JITCompiler myJIT;
-            myJIT.analyseTopLevelExpression(std::move(copied));
-        }
-
         return function;
+    } else {
+        Builder->CreateRetVoid();
     }
 
     function->eraseFromParent();
@@ -174,6 +177,25 @@ int LLVMIRGenerator::generateIR(const std::unique_ptr<NodeAST> &root) {
             logIRGenerationError("Code Generation failed for prototype");
             return 1;
         }
+
+        // if (functionAST->getPrototype()->getName().find("__anon_expr") != std::string::npos) {
+        //     std::unique_ptr<Module> copied = CloneModule(*TheModule.get());
+            
+        //     auto H = myJIT->addModule(std::move(copied));
+
+        //     // Search the JIT for the __anon_expr symbol.
+        //     auto ExprSymbol = myJIT->findSymbol("__anon_expr");
+        //     assert(ExprSymbol && "Function not found");
+
+        //     // Get the symbol's address and cast it to the right type (takes no
+        //     // arguments, returns a double) so we can call it as a native function.
+        //     double (*FP)() = (double (*)())(intptr_t)cantFail(ExprSymbol.getAddress());
+        //     fprintf(stderr, "Evaluated to %f\n", FP());
+
+        //     // Delete the anonymous expression module from the JIT.
+        //     myJIT->removeModule(H);
+        // }
+        
     } else if (PrototypeAST *prototypeAST = dynamic_cast<PrototypeAST *>(root.get())) {
         auto code = visitPrototype(prototypeAST);
         if (code == nullptr) {

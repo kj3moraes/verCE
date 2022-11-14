@@ -10,7 +10,7 @@
 #include "../AST.h"
 #include "../CodeGeneration.h"
 #include "Visitor.h"
-#include "JITCompiler.h"
+#include "../KaleidoscopeJIT.h"
 
 using namespace llvm;
 
@@ -22,6 +22,7 @@ class LLVMIRGenerator : public Visitor {
         std::unique_ptr<Module> TheModule;
         std::unique_ptr<legacy::FunctionPassManager> TheFPM;
         std::map<std::string, Value *> NamedValues;
+        std::unique_ptr<orc::KaleidoscopeJIT> myJIT;
 
         /**
          * @brief Generates the IR for a binary operation passed in via the AST
