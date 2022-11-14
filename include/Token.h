@@ -26,6 +26,10 @@ enum Kind {
     DOT,
     DEF,
     EXTERN,
+    IF,
+    FOR,
+    THEN,
+    ELSE,
     WHITESPACE,
     END_OF_FILE,
 };

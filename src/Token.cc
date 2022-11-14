@@ -28,6 +28,10 @@ std::ostream &operator<<(std::ostream &out, const Token &tok) {
         case DEF:        out << "DEF";        break;
         case EXTERN:     out << "EXTERN";     break;
         case WHITESPACE: out << "WHITESPACE"; break;
+        case IF:         out << "IF";         break;
+        case FOR:        out << "FOR";        break;
+        case THEN:       out << "THEN";       break;
+        case ELSE:       out << "ELSE";       break;
         case END_OF_FILE:out << "//:eof://";  break;
     }
     out << ":" << tok.getLexeme() << " ";

@@ -43,6 +43,10 @@ class Parser {
 
     std::unique_ptr<ExpressionAST> parsePrimary();
 
+    std::unique_ptr<ExpressionAST> parseIfExpression();
+
+    std::unique_ptr<ExpressionAST> parseForExpression();
+
     std::unique_ptr<ExpressionAST> parseBinaryOperatorRHS(int precedence, std::unique_ptr<ExpressionAST> lhs);
 
     std::unique_ptr<NumberExpressionAST> parseNumberExpression();
