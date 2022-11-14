@@ -2,8 +2,7 @@
 CXX				:= clang++
 
 # Target executable(s)
-TARGET			:= verCE
-LIBRARY			:= libverCE.a
+TARGET			:= verce
 
 # Directories
 SRC_DIR			:= src
@@ -30,7 +29,7 @@ INC_DEP			:= -I$(INCLUDE_DIR)
 # =================================== COMMON FUNCS ======================================
 
 # Default Make
-all: directories $(LIBRARY) $(TARGET)
+all: directories $(TARGET)
 
 # Remake the executable
 remake: purge all
@@ -48,6 +47,7 @@ clean:
 purge: clean
 	@$(RM) -rf $(TARGET_DIR)
 
+
 SOURCES     := $(shell find $(SRC_DIR) -type f -name *.$(SRC_EXT))
 OBJECTS     := $(patsubst $(SRC_DIR)/%,$(OBJ_DIR)/%,$(SOURCES:.$(SRC_EXT)=.$(OBJ_EXT)))
 
@@ -57,9 +57,6 @@ OBJECTS     := $(patsubst $(SRC_DIR)/%,$(OBJ_DIR)/%,$(SOURCES:.$(SRC_EXT)=.$(OBJ
 # Link
 $(TARGET): $(OBJECTS)
 	$(CXX) -o $(TARGET_DIR)/$(TARGET) $^ $(LIB_FLAGS)
-
-$(LIBRARY): $(OBJECTS) $(OBJECTS_PRG)
-	ar rcs $(TARGET_DIR)/$(LIBRARY) $^
 
 # Compile
 $(OBJ_DIR)/%.$(OBJ_EXT): $(SRC_DIR)/%.$(SRC_EXT)
