@@ -9,6 +9,8 @@ std::map<Kind, int> Parser::binaryOperatorPrecedence = {
     {SLASH, 40},
 };
 
+static unsigned long anon_expression_counter = 0;
+
 Parser::~Parser() {}
 
 void Parser::advance() {
@@ -23,7 +25,7 @@ int Parser::getTokenPrecedence() {
     return -1;
 }
 
-void Parser::logParsingError(const std::string errorMsg) const {
+static void logParsingError(const std::string errorMsg) {
     std::cerr << "ERROR (Parsing): " << errorMsg << std::endl;
 }
 
@@ -139,9 +141,8 @@ std::unique_ptr<ExpressionAST> Parser::parseBinaryOperatorRHS(int precedence, st
 
 std::unique_ptr<NumberExpressionAST> Parser::parseNumberExpression() {
     double number = std::stod(currentToken.getLexeme());
-    auto result = std::make_unique<NumberExpressionAST>(number);
     advance();
-    return result;
+    return std::make_unique<NumberExpressionAST>(number);
 }
 
 
@@ -161,7 +162,8 @@ std::unique_ptr<FunctionAST> Parser::parseDefintion() {
 std::unique_ptr<FunctionAST> Parser::parseTopLevelExpression() {
     if (auto E = parseExpression()) {
         // Make an anonymous prototype.
-        auto prototype = std::make_unique<PrototypeAST>("__anon_expr", std::vector<std::string>());
+        auto prototype = std::make_unique<PrototypeAST>("__anon_expr" + std::to_string(anon_expression_counter), std::vector<std::string>());
+        anon_expression_counter++;
         return std::make_unique<FunctionAST>(std::move(prototype), std::move(E));
     }
     return nullptr;

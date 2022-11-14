@@ -10,6 +10,7 @@
 #include "../AST.h"
 #include "../CodeGeneration.h"
 #include "Visitor.h"
+#include "../KaleidoscopeJIT.h"
 
 using namespace llvm;
 
@@ -19,9 +20,9 @@ class LLVMIRGenerator : public Visitor {
         std::unique_ptr<LLVMContext> TheContext;
         std::unique_ptr<IRBuilder<>> Builder;
         std::unique_ptr<Module> TheModule;
+        std::unique_ptr<legacy::FunctionPassManager> TheFPM;
         std::map<std::string, Value *> NamedValues;
-
-        void *logIRGenerationError(std::string errorMsg) const;
+        std::unique_ptr<orc::KaleidoscopeJIT> myJIT;
 
         /**
          * @brief Generates the IR for a binary operation passed in via the AST
@@ -41,9 +42,6 @@ class LLVMIRGenerator : public Visitor {
          */
         Value *visitNumber(const NumberExpressionAST *ast) const override;
 
-        /**
-         * 
-        */
         Value *visitVariable(const VariableExpressionAST *ast) const override;
         Value *visitCallExpr(const CallExpressionAST *ast) const override;
         Function *visitPrototype(const PrototypeAST *ast) const override;
@@ -53,8 +51,24 @@ class LLVMIRGenerator : public Visitor {
         LLVMIRGenerator();
         ~LLVMIRGenerator();
 
+        /**
+         * @brief 
+         * 
+         * @param[in] root 
+         * @return int 
+         */
         int generateIR(const std::unique_ptr<NodeAST> &root);
         
+        /**
+         * @brief Get the Module object
+         * 
+         * @return Module* - Pointer to the Module object. 
+         */
+        Module *getModule() const;
+
+        /**
+         * @brief Prints the IR stored in the Module object
+         */
         void printIR() const;
 };
 

@@ -57,8 +57,6 @@ class Lexer {
     Kind stateToKind(State s) const;
 
     std::vector<Token> simplifiedMaximalMunch(const std::string &input) const;
-    
-    void logLexerError(const std::string errorMsg) const;
 
     void registerTransition(State oldState, const std::string &chars, State newState);
 

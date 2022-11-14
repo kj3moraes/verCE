@@ -85,7 +85,7 @@ Kind Lexer::stateToKind(State s) const {
     }
 }
 
-void Lexer::logLexerError(const std::string errorMsg) const {
+static void logLexerError(const std::string errorMsg) {
     std::cerr << "Lexer Error: " << errorMsg << std::endl;
 }
 
