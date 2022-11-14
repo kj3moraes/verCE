@@ -25,7 +25,7 @@ int Parser::getTokenPrecedence() {
     return -1;
 }
 
-void Parser::logParsingError(const std::string errorMsg) const {
+static void logParsingError(const std::string errorMsg) {
     std::cerr << "ERROR (Parsing): " << errorMsg << std::endl;
 }
 

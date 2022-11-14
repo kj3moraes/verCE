@@ -35,8 +35,6 @@ class Parser {
      */
     int getTokenPrecedence();
 
-    void logParsingError(const std::string errorMsg) const;
-
     std::unique_ptr<ExpressionAST> parseExpression();
 
     std::unique_ptr<ExpressionAST> parseParenthesisExpression();
