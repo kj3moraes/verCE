@@ -1,23 +1,5 @@
-//===- KaleidoscopeJIT.h - A simple JIT for Kaleidoscope --------*- C++ -*-===//
-//
-// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
-// See https://llvm.org/LICENSE.txt for license information.
-// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
-//
-//===----------------------------------------------------------------------===//
-//
-// Contains a simple JIT definition for use in the kaleidoscope tutorials.
-//
-//===----------------------------------------------------------------------===//
-
 #ifndef LLVM_EXECUTIONENGINE_ORC_KALEIDOSCOPEJIT_H
 #define LLVM_EXECUTIONENGINE_ORC_KALEIDOSCOPEJIT_H
-
-#include <algorithm>
-#include <map>
-#include <memory>
-#include <string>
-#include <vector>
 
 #include "llvm/ADT/STLExtras.h"
 #include "llvm/ADT/iterator_range.h"
@@ -34,58 +16,63 @@
 #include "llvm/Support/DynamicLibrary.h"
 #include "llvm/Support/raw_ostream.h"
 #include "llvm/Target/TargetMachine.h"
+#include <algorithm>
+#include <map>
+#include <memory>
+#include <string>
+#include <vector>
 
 namespace llvm {
 namespace orc {
 
 class KaleidoscopeJIT {
-    public:
-        using ObjLayerT = LegacyRTDyldObjectLinkingLayer;
-        using CompileLayerT = LegacyIRCompileLayer<ObjLayerT, SimpleCompiler>;
+public:
+  using ObjLayerT = LegacyRTDyldObjectLinkingLayer;
+  using CompileLayerT = LegacyIRCompileLayer<ObjLayerT, SimpleCompiler>;
 
-        KaleidoscopeJIT()
-            : Resolver(createLegacyLookupResolver(
-                ES,
-                [this](const std::string &Name) { return findMangledSymbol(Name); },
-                [](Error Err) { cantFail(std::move(Err), "lookupFlags failed"); })),
-            TM(EngineBuilder().selectTarget()), DL(TM->createDataLayout()),
-            ObjectLayer(AcknowledgeORCv1Deprecation, ES,
-                        [this](VModuleKey) {
-                            return ObjLayerT::Resources{
-                                std::make_shared<SectionMemoryManager>(), Resolver};
-                        }),
-            CompileLayer(AcknowledgeORCv1Deprecation, ObjectLayer,
-                            SimpleCompiler(*TM)) {
-        llvm::sys::DynamicLibrary::LoadLibraryPermanently(nullptr);
-        }
+  KaleidoscopeJIT()
+      : Resolver(createLegacyLookupResolver(
+            ES,
+            [this](const std::string &Name) { return findMangledSymbol(Name); },
+            [](Error Err) { cantFail(std::move(Err), "lookupFlags failed"); })),
+        TM(EngineBuilder().selectTarget()), DL(TM->createDataLayout()),
+        ObjectLayer(AcknowledgeORCv1Deprecation, ES,
+                    [this](VModuleKey) {
+                      return ObjLayerT::Resources{
+                          std::make_shared<SectionMemoryManager>(), Resolver};
+                    }),
+        CompileLayer(AcknowledgeORCv1Deprecation, ObjectLayer,
+                     SimpleCompiler(*TM)) {
+    llvm::sys::DynamicLibrary::LoadLibraryPermanently(nullptr);
+  }
 
-        TargetMachine &getTargetMachine() { return *TM; }
+  TargetMachine &getTargetMachine() { return *TM; }
 
-        VModuleKey addModule(std::unique_ptr<Module> M) {
-        auto K = ES.allocateVModule();
-        cantFail(CompileLayer.addModule(K, std::move(M)));
-        ModuleKeys.push_back(K);
-        return K;
-        }
+  VModuleKey addModule(std::unique_ptr<Module> M) {
+    auto K = ES.allocateVModule();
+    cantFail(CompileLayer.addModule(K, std::move(M)));
+    ModuleKeys.push_back(K);
+    return K;
+  }
 
-        void removeModule(VModuleKey K) {
-        ModuleKeys.erase(find(ModuleKeys, K));
-        cantFail(CompileLayer.removeModule(K));
-        }
+  void removeModule(VModuleKey K) {
+    ModuleKeys.erase(find(ModuleKeys, K));
+    cantFail(CompileLayer.removeModule(K));
+  }
 
-        JITSymbol findSymbol(const std::string Name) {
-        return findMangledSymbol(mangle(Name));
-        }
+  JITSymbol findSymbol(const std::string Name) {
+    return findMangledSymbol(mangle(Name));
+  }
 
-    private:
-        std::string mangle(const std::string &Name) {
-            std::string MangledName;
-            {
-                raw_string_ostream MangledNameStream(MangledName);
-                Mangler::getNameWithPrefix(MangledNameStream, Name, DL);
-            }
-            return MangledName;
-        }
+private:
+  std::string mangle(const std::string &Name) {
+    std::string MangledName;
+    {
+      raw_string_ostream MangledNameStream(MangledName);
+      Mangler::getNameWithPrefix(MangledNameStream, Name, DL);
+    }
+    return MangledName;
+  }
 
   JITSymbol findMangledSymbol(const std::string &Name) {
 #ifdef _WIN32

@@ -9,8 +9,8 @@
 
 #include "../AST.h"
 #include "../CodeGeneration.h"
-#include "JITCompiler.h"
 #include "Visitor.h"
+#include "JITCompiler.h"
 
 using namespace llvm;
 
@@ -22,14 +22,6 @@ class LLVMIRGenerator : public Visitor {
         std::unique_ptr<Module> TheModule;
         std::unique_ptr<legacy::FunctionPassManager> TheFPM;
         std::map<std::string, Value *> NamedValues;
-
-        /**
-         * @brief 
-         * 
-         * @param[in] errorMsg 
-         * @return void* 
-         */
-        void *logIRGenerationError(std::string errorMsg) const;
 
         /**
          * @brief Generates the IR for a binary operation passed in via the AST
@@ -64,7 +56,7 @@ class LLVMIRGenerator : public Visitor {
          * @param[in] root 
          * @return int 
          */
-        int generateIR(const std::unique_ptr<NodeAST> &root, bool isNoOpt);
+        int generateIR(const std::unique_ptr<NodeAST> &root);
         
         /**
          * @brief Get the Module object

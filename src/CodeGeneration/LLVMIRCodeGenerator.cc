@@ -19,9 +19,7 @@ extern "C" DLLEXPORT double printd(double X) {
   return 0;
 }
 
-static unsigned long anon_expression_counter = 0;
-
-void *LLVMIRGenerator::logIRGenerationError(std::string errorMsg) const {
+static void *logIRGenerationError(std::string errorMsg) {
     std::cerr << "ERROR: (IR Generation) " << errorMsg << std::endl;
     return nullptr;
 }
@@ -37,6 +35,12 @@ LLVMIRGenerator::LLVMIRGenerator() {
 
     // Create a new pass manager attached to it.
     TheFPM = std::make_unique<legacy::FunctionPassManager>(getModule());
+
+    TheFPM->add(createInstructionCombiningPass());
+    TheFPM->add(createReassociatePass());
+    TheFPM->add(createGVNPass());
+    TheFPM->add(createCFGSimplificationPass());
+    TheFPM->doInitialization();
 }
     
 
@@ -162,7 +166,7 @@ Function *LLVMIRGenerator::visitFunctionDef(const FunctionAST *ast) {
 }
 
 
-int LLVMIRGenerator::generateIR(const std::unique_ptr<NodeAST> &root, bool isNoOpt) {
+int LLVMIRGenerator::generateIR(const std::unique_ptr<NodeAST> &root) {
     
     if (FunctionAST *functionAST = dynamic_cast<FunctionAST *>(root.get())) {
         auto code = visitFunctionDef(functionAST);
@@ -179,14 +183,6 @@ int LLVMIRGenerator::generateIR(const std::unique_ptr<NodeAST> &root, bool isNoO
     } else {
         logIRGenerationError("Unknown AST node type");
         return 1;
-    }
-
-    if (!isNoOpt) {
-        TheFPM->add(createInstructionCombiningPass());
-        TheFPM->add(createReassociatePass());
-        TheFPM->add(createGVNPass());
-        TheFPM->add(createCFGSimplificationPass());
-        TheFPM->doInitialization();
     }
 
     return 0;

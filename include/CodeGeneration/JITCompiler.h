@@ -1,16 +1,18 @@
 #ifndef __JIT_COMPILER_H__
 #define __JIT_COMPILER_H__
 
-#include <algorithm>
 #include <memory>
 
 #include "../KaleidoscopeJIT.h"
 #include "../CodeGeneration.h"
 
+using namespace llvm;
+
 class JITCompiler {
-    std::unique_ptr<llvm::orc::KaleidoscopeJIT> TheJIT;
+    std::unique_ptr<orc::KaleidoscopeJIT> TheJIT;
 
     public:
-        double analyseTopLevelExpression(std::unique_ptr<llvm::Module> module);
+        JITCompiler();
+        double analyseTopLevelExpression(std::unique_ptr<Module> module);
 };
 #endif
