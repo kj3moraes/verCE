@@ -17,13 +17,14 @@ class BinaryExpressionAST : public ExpressionAST {
         BinaryExpressionAST(Token Op, 
                       std::unique_ptr<ExpressionAST> LHS,
                       std::unique_ptr<ExpressionAST> RHS) : op(Op), LHS(std::move(LHS)), RHS(std::move(RHS)) {}
-
+        ~BinaryExpressionAST() { }
+        
         const Token getOperator() const { return op; }
 
         ExpressionAST *getLHS() const { return LHS.get(); }
         ExpressionAST *getRHS() const { return RHS.get(); }
 
-        Value *accept(const Visitor *gen) override;
+        Value *accept(Visitor *gen) override;
 };
 
 #endif

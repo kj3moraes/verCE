@@ -20,9 +20,9 @@ class ForExpressionAST : public ExpressionAST {
                         std::unique_ptr<ExpressionAST> Body)
                 : VarName(VarName), Start(std::move(Start)), End(std::move(End)),
                 Step(std::move(Step)), Body(std::move(Body)) {}
+        ~ForExpressionAST() { }
 
-
-         Value *accept(const Visitor *gen) override;
+         Value *accept(Visitor *gen) override;
 };
 
 #endif

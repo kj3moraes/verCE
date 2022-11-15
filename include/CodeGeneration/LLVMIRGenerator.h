@@ -31,7 +31,7 @@ class LLVMIRGenerator : public Visitor {
          * @param[in] ast The root of the Binary Operation AST.
          * @return Value* - 
          */
-        Value *visitBinaryOp(const BinaryExpressionAST *ast) const override;
+        Value *visitBinaryOp(const BinaryExpressionAST *ast) override;
         
         /**
          * @brief Generates the IR for a number passed in via the AST and stores
@@ -40,11 +40,12 @@ class LLVMIRGenerator : public Visitor {
          * @param[in] ast 
          * @return Value* - 
          */
-        Value *visitNumber(const NumberExpressionAST *ast) const override;
-
-        Value *visitVariable(const VariableExpressionAST *ast) const override;
-        Value *visitCallExpr(const CallExpressionAST *ast) const override;
-        Function *visitPrototype(const PrototypeAST *ast) const override;
+        Value *visitNumber(const NumberExpressionAST *ast) override;
+        Value *visitVariable(const VariableExpressionAST *ast) override;
+        Value *visitCallExpr(const CallExpressionAST *ast) override;
+        Value *visitIfExpr(const IfExpressionAST *ast) override;
+        Value *visitForExpr(const ForExpressionAST *ast) override;
+        Function *visitPrototype(const PrototypeAST *ast) override;
         Function *visitFunctionDef(const FunctionAST *ast) override;
     
     public:

@@ -11,10 +11,11 @@ class NumberExpressionAST : public ExpressionAST {
 
     public:
         NumberExpressionAST(double value) : val(value) {}
-
+        ~NumberExpressionAST() {}
+        
         double getValue() const { return val; }
 
-        Value *accept(const Visitor *gen) override;
+        Value *accept(Visitor *gen) override;
 };
 
 #endif // __NUMBER_AST_H__

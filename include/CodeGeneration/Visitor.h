@@ -18,26 +18,15 @@ class Visitor {
     public:
         virtual ~Visitor() {}
 
-        virtual Value *visitBinaryOp(const BinaryExpressionAST *ast) const = 0;
-        virtual Value *visitNumber(const NumberExpressionAST *ast) const = 0;
-        virtual Value *visitVariable(const VariableExpressionAST *ast) const = 0;
-        virtual Value *visitCallExpr(const CallExpressionAST *ast) const = 0;
-        virtual Function *visitPrototype(const PrototypeAST *ast) const = 0;
+        virtual Value *visitBinaryOp(const BinaryExpressionAST *ast) = 0;
+        virtual Value *visitNumber(const NumberExpressionAST *ast) = 0;
+        virtual Value *visitVariable(const VariableExpressionAST *ast) = 0;
+        virtual Value *visitCallExpr(const CallExpressionAST *ast) = 0;
+        virtual Value *visitIfExpr(const IfExpressionAST *ast) = 0;
+        virtual Value *visitForExpr(const ForExpressionAST *ast) = 0;
+        virtual Function *visitPrototype(const PrototypeAST *ast) = 0;
         virtual Function *visitFunctionDef(const FunctionAST *ast) = 0;
 };
 
 #endif // __VISITOR_H__
 
-#ifndef __CODE_GENERATION_FAILURE_H__
-#define __CODE_GENERATION_FAILURE_H__
-
-class CodeGenerationFailure {
-    std::string message;
-
-    public:
-        CodeGenerationFailure(const std::string& message) : message("ERROR (codegen): " + message) {}
-
-        std::string what() const { return message; }
-};
-
-#endif

@@ -18,6 +18,8 @@ class FunctionAST : public NodeAST {
                     std::unique_ptr<ExpressionAST> Body)
             : prototype(std::move(Proto)), body(std::move(Body)) {}
         
+        ~FunctionAST() { };
+
         PrototypeAST *getPrototype() const { return prototype.get(); }
         ExpressionAST *getBody() const { return body.get(); }
 

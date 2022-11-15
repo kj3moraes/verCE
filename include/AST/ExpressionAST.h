@@ -14,7 +14,7 @@ class ExpressionAST : public NodeAST {
 
     public:
         virtual ~ExpressionAST() {}
-        virtual Value *accept(const Visitor *gen) = 0;
+        virtual Value *accept(Visitor *gen) = 0;
 };
 
 #endif // __EXPR_AST_H__

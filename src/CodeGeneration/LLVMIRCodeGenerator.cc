@@ -54,7 +54,7 @@ LLVMIRGenerator::LLVMIRGenerator() {
 LLVMIRGenerator::~LLVMIRGenerator() {}
 
 
-Value *LLVMIRGenerator::visitVariable(const VariableExpressionAST *ast) const {
+Value *LLVMIRGenerator::visitVariable(const VariableExpressionAST *ast) {
     // Look this variable up in the function.
     Value *V = NamedValues.at(ast->getName());
     if (!V)
@@ -63,7 +63,7 @@ Value *LLVMIRGenerator::visitVariable(const VariableExpressionAST *ast) const {
 }
 
 
-Value *LLVMIRGenerator::visitBinaryOp(const BinaryExpressionAST *ast) const {
+Value *LLVMIRGenerator::visitBinaryOp(const BinaryExpressionAST *ast) {
     Value *lhs = ast->getLHS()->accept(this);
     Value *rhs = ast->getRHS()->accept(this);
     switch (ast->getOperator().getKind()) {
@@ -85,12 +85,12 @@ Value *LLVMIRGenerator::visitBinaryOp(const BinaryExpressionAST *ast) const {
 }
 
 
-Value *LLVMIRGenerator::visitNumber(const NumberExpressionAST *ast) const {
+Value *LLVMIRGenerator::visitNumber(const NumberExpressionAST *ast) {
     return ConstantFP::get(*TheContext, APFloat(ast->getValue()));
 }
 
 
-Value *LLVMIRGenerator::visitCallExpr(const CallExpressionAST *ast) const {
+Value *LLVMIRGenerator::visitCallExpr(const CallExpressionAST *ast) {
     // Look up the name in the global module table.
     Function *calleeF = TheModule->getFunction(ast->getCallee()); 
 
@@ -111,7 +111,16 @@ Value *LLVMIRGenerator::visitCallExpr(const CallExpressionAST *ast) const {
 }
 
 
-Function *LLVMIRGenerator::visitPrototype(const PrototypeAST *ast) const {
+Value *LLVMIRGenerator::visitIfExpr(const IfExpressionAST *ast) {
+    return nullptr;
+}
+
+Value *LLVMIRGenerator::visitForExpr(const ForExpressionAST *ast) {
+    return nullptr;
+}
+
+
+Function *LLVMIRGenerator::visitPrototype(const PrototypeAST *ast) {
 
     // Make the function type:  double(double,double) etc.
     std::vector<Type *> Doubles(ast->getNumberOfArgs(), Type::getDoubleTy(*TheContext));

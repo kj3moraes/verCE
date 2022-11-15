@@ -15,12 +15,13 @@ class PrototypeAST : public NodeAST{
     public:
         PrototypeAST(const std::string &Name, std::vector<std::string> Args)
             : Name(Name), Args(std::move(Args)) {}
-
+        ~PrototypeAST() {}
+        
         inline std::string getName() const { return Name; }
         inline const std::vector<std::string> &getArgs() const { return Args; }
         inline unsigned long getNumberOfArgs() const { return Args.size(); }
         
-        Function *accept(const Visitor *gen);
+        Function *accept(Visitor *gen);
 };
 
 #endif // __PROTOTYPE_AST_H__
