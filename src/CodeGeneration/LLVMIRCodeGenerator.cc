@@ -7,6 +7,8 @@
 #define DLLEXPORT
 #endif
 
+static unsigned long anon_expression_counter = 0;
+
 /// putchard - putchar that takes a double and returns 0.
 extern "C" DLLEXPORT double putchard(double X) {
   fputc((char)X, stderr);
@@ -35,6 +37,7 @@ LLVMIRGenerator::LLVMIRGenerator() {
 
     TheContext = std::make_unique<LLVMContext>();
     TheModule = std::make_unique<Module>("KEANE'S JIT.C", *TheContext);
+    TheModule->setDataLayout(myJIT->getTargetMachine().createDataLayout());
 
     // Create a new builder for the module.
     Builder = std::make_unique<IRBuilder<>>(*TheContext);
@@ -112,8 +115,59 @@ Value *LLVMIRGenerator::visitCallExpr(const CallExpressionAST *ast) {
 
 
 Value *LLVMIRGenerator::visitIfExpr(const IfExpressionAST *ast) {
-    return nullptr;
+    
+    Value *condV = ast->getCondition()->accept(this);
+    if (!condV) {
+        return nullptr;
+    }
+
+    // Convert condV to a bool by comparing non-equal to 0.0.
+    condV = Builder->CreateFCmpONE(
+                    condV, ConstantFP::get(*TheContext, APFloat(0.0)), "ifcond");
+
+    Function *TheFunction = Builder->GetInsertBlock()->getParent();
+
+    // Create blocks for the then and else cases.  Insert the 'then' block at the
+    // end of the function.
+    BasicBlock *ThenBB = BasicBlock::Create(*TheContext, "then", TheFunction);
+    BasicBlock *ElseBB = BasicBlock::Create(*TheContext, "else");
+    BasicBlock *MergeBB = BasicBlock::Create(*TheContext, "ifcont");
+
+    Builder->CreateCondBr(condV, ThenBB, ElseBB);
+
+    // Emit then value.
+    Builder->SetInsertPoint(ThenBB);
+
+    Value *ThenV = ast->getThen()->accept(this);
+    if (!ThenV)
+        return nullptr;
+
+    Builder->CreateBr(MergeBB);
+    // Codegen of 'Then' can change the current block, update ThenBB for the PHI.
+    ThenBB = Builder->GetInsertBlock();
+
+    // Emit else block.
+    TheFunction->getBasicBlockList().push_back(ElseBB);
+    Builder->SetInsertPoint(ElseBB);
+
+    Value *ElseV = ast->getElse()->accept(this);
+    if (!ElseV)
+        return nullptr;
+
+    Builder->CreateBr(MergeBB);
+    // Codegen of 'Else' can change the current block, update ElseBB for the PHI.
+    ElseBB = Builder->GetInsertBlock();
+
+    // Emit merge block.
+    TheFunction->getBasicBlockList().push_back(MergeBB);
+    Builder->SetInsertPoint(MergeBB);
+    PHINode *PN = Builder->CreatePHI(Type::getDoubleTy(*TheContext), 2, "iftmp");
+
+    PN->addIncoming(ThenV, ThenBB);
+    PN->addIncoming(ElseV, ElseBB);
+    return PN;
 }
+
 
 Value *LLVMIRGenerator::visitForExpr(const ForExpressionAST *ast) {
     return nullptr;
@@ -187,23 +241,23 @@ int LLVMIRGenerator::generateIR(const std::unique_ptr<NodeAST> &root) {
             return 1;
         }
 
-        // if (functionAST->getPrototype()->getName().find("__anon_expr") != std::string::npos) {
-        //     std::unique_ptr<Module> copied = CloneModule(*TheModule.get());
-            
-        //     auto H = myJIT->addModule(std::move(copied));
+        std::unique_ptr<Module> copied = CloneModule(*TheModule.get());    
+        auto H = myJIT->addModule(std::move(copied));
 
-        //     // Search the JIT for the __anon_expr symbol.
-        //     auto ExprSymbol = myJIT->findSymbol("__anon_expr");
-        //     assert(ExprSymbol && "Function not found");
+        if (functionAST->getPrototype()->getName().find("__anon_expr") != std::string::npos) {
 
-        //     // Get the symbol's address and cast it to the right type (takes no
-        //     // arguments, returns a double) so we can call it as a native function.
-        //     double (*FP)() = (double (*)())(intptr_t)cantFail(ExprSymbol.getAddress());
-        //     fprintf(stderr, "Evaluated to %f\n", FP());
+            // Search the JIT for the __anon_expr symbol.
+            auto ExprSymbol = myJIT->findSymbol("__anon_expr" + std::to_string(anon_expression_counter++));
+            assert(ExprSymbol && "Function not found");
 
-        //     // Delete the anonymous expression module from the JIT.
-        //     myJIT->removeModule(H);
-        // }
+            // Get the symbol's address and cast it to the right type (takes no
+            // arguments, returns a double) so we can call it as a native function.
+            double (*FP)() = (double (*)())(intptr_t)cantFail(ExprSymbol.getAddress());
+            fprintf(stderr, "Evaluated to %f\n", FP());
+
+            // Delete the anonymous expression module from the JIT.
+            myJIT->removeModule(H);
+        }
         
     } else if (PrototypeAST *prototypeAST = dynamic_cast<PrototypeAST *>(root.get())) {
         auto code = visitPrototype(prototypeAST);
