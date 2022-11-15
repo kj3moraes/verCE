@@ -100,10 +100,51 @@ std::unique_ptr<ExpressionAST> Parser::parsePrimary() {
             return parseIdentifierExpression();
         case Kind::LPAREN:
             return parseParenthesisExpression();
+        case Kind::IF:
+            return parseIfExpression();
         default:
             logParsingError("Unknown token when expecting an expression");
             return nullptr;
     }
+}
+
+
+std::unique_ptr<ExpressionAST> Parser::parseIfExpression() {
+
+    advance();
+
+    // Parse the if condition
+    auto condition = parseExpression();
+    if (!condition) {
+        return nullptr;
+    }
+
+    if (currentToken.getKind() != THEN) {
+        logParsingError("'then' is expected after an if condition" );
+        return nullptr;
+    }
+
+    advance();
+
+    auto trueExpression = parseExpression();
+    if (!trueExpression) {
+        return nullptr;
+    }
+
+    if (currentToken.getKind() != ELSE) {
+        logParsingError("'else' is expected after the first if expression");
+        return nullptr;
+    }
+
+    advance();
+
+    auto elseExpression = parseExpression();
+    if (!elseExpression) {
+        return nullptr;
+    }
+
+    return std::make_unique<IfExpressionAST>(std::move(condition), std::move(trueExpression),
+                                                std::move(elseExpression));
 }
 
 

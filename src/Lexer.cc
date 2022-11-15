@@ -6,6 +6,10 @@
 const std::map<std::string, Kind> specialIDS = {
     {"def", DEF},
     {"extern", EXTERN},
+    {"if", IF},
+    {"for", FOR},
+    {"then", THEN},
+    {"else", ELSE}
 };
 
 Lexer::Lexer() {
@@ -86,7 +90,7 @@ Kind Lexer::stateToKind(State s) const {
 }
 
 static void logLexerError(const std::string errorMsg) {
-    std::cerr << "Lexer Error: " << errorMsg << std::endl;
+    std::cerr << "ERROR: (Lexer) " << errorMsg << std::endl;
 }
 
 void Lexer::registerTransition(State oldState, const std::string &chars, State newState) {
@@ -148,7 +152,7 @@ std::vector<Token> Lexer::simplifiedMaximalMunch(const std::string &input) const
         }
 
         if (inputPosn == input.end() || isFailed(state)) {
-            if (isAccepted(oldState)) {
+            if (isAccepted(oldState)) { 
                 result.emplace_back(stateToKind(oldState), munchedInput);
                 munchedInput = "";
                 state = start();
@@ -176,12 +180,17 @@ std::vector<Token> Lexer::scan(std::string &input) const {
 
     for (auto &t : tokens) {
         if (t.getKind() == ID) {
+
+            // Check if the ID is a "special" ID defined above
             auto it = specialIDS.find(t.getLexeme());
 
+            // If it is NOT, then add it to the end of the final tokens list
             if (it == specialIDS.end()) {
                 finaltokens.push_back(t);
                 continue;
             }
+            
+            // If it is then create a new Token with the Kind respective to the special ID.
             finaltokens.emplace_back(it->second, it->first);
             continue;
         } else if (t.getKind() == WHITESPACE) {
