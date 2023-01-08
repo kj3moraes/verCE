@@ -37,7 +37,7 @@ LLVMIRGenerator::LLVMIRGenerator() {
 
     TheContext = std::make_unique<LLVMContext>();
     TheModule = std::make_unique<Module>("KEANE'S JIT.C", *TheContext);
-    TheModule->setDataLayout(myJIT->getTargetMachine().createDataLayout());
+    TheModule->setDataLayout(myJIT->getDataLayout());
 
     // Create a new builder for the module.
     Builder = std::make_unique<IRBuilder<>>(*TheContext);
@@ -195,7 +195,7 @@ Function *LLVMIRGenerator::visitPrototype(const PrototypeAST *ast) {
 Function *LLVMIRGenerator::visitFunctionDef(const FunctionAST *ast) {
 
     // 1. Check if the function is already defined via `extern`.
-    Function *function = TheModule->getFunction(ast->getPrototype()->getName());
+    Function *function = TheModule->getFunction(ast->getProto()->getName());
 
     if (!function)
         function = visitPrototype(ast->getPrototype());
@@ -241,23 +241,23 @@ int LLVMIRGenerator::generateIR(const std::unique_ptr<NodeAST> &root) {
             return 1;
         }
 
-        std::unique_ptr<Module> copied = CloneModule(*TheModule.get());    
-        auto H = myJIT->addModule(std::move(copied));
+        // std::unique_ptr<Module> copied = CloneModule(*TheModule.get());    
+        // auto H = myJIT->addModule(std::move(copied));
 
-        if (functionAST->getPrototype()->getName().find("__anon_expr") != std::string::npos) {
+        // if (functionAST->getPrototype()->getName().find("__anon_expr") != std::string::npos) {
 
-            // Search the JIT for the __anon_expr symbol.
-            auto ExprSymbol = myJIT->findSymbol("__anon_expr" + std::to_string(anon_expression_counter++));
-            assert(ExprSymbol && "Function not found");
+        //     // Search the JIT for the __anon_expr symbol.
+        //     auto ExprSymbol = myJIT->findSymbol("__anon_expr" + std::to_string(anon_expression_counter++));
+        //     assert(ExprSymbol && "Function not found");
 
-            // Get the symbol's address and cast it to the right type (takes no
-            // arguments, returns a double) so we can call it as a native function.
-            double (*FP)() = (double (*)())(intptr_t)cantFail(ExprSymbol.getAddress());
-            fprintf(stderr, "Evaluated to %f\n", FP());
+        //     // Get the symbol's address and cast it to the right type (takes no
+        //     // arguments, returns a double) so we can call it as a native function.
+        //     double (*FP)() = (double (*)())(intptr_t)cantFail(ExprSymbol.getAddress());
+        //     fprintf(stderr, "Evaluated to %f\n", FP());
 
-            // Delete the anonymous expression module from the JIT.
-            myJIT->removeModule(H);
-        }
+        //     // Delete the anonymous expression module from the JIT.
+        //     myJIT->removeModule(H);
+        // }
         
     } else if (PrototypeAST *prototypeAST = dynamic_cast<PrototypeAST *>(root.get())) {
         auto code = visitPrototype(prototypeAST);
